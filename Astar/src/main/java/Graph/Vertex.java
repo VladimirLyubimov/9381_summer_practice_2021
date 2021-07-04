@@ -10,6 +10,7 @@ public class Vertex {
     private int came_from = -1;
     private int path_val = 1000000;
     private int total_val = 1000000;
+    private boolean exist = true;
     private ArrayList<Edge> neighbours;
 
     public Vertex(String label, int num, int x, int y){
@@ -48,6 +49,14 @@ public class Vertex {
         return total_val;
     }
 
+    public boolean isExist() {
+        return exist;
+    }
+
+    public void setExist(boolean exist) {
+        this.exist = exist;
+    }
+
     public void setX(int x){
         this.x = x;
     }
@@ -78,6 +87,10 @@ public class Vertex {
 
     public Edge getEdge(int pos){
         return neighbours.get(pos);
+    }
+
+    public void deleteEdge(int pos){
+        neighbours.remove(pos);
     }
 
     public void printVertex(){

@@ -17,6 +17,9 @@ public class AWithStar {
     }
 
     public ArrayList<Integer> doAlgo(String start_label, String finish_label){
+        if(!graph.isVertexExist(start_label) || !graph.isVertexExist(finish_label)){
+            return null;
+        }
         int start = graph.getNumByLabel(start_label);
         int finish = graph.getNumByLabel(finish_label);
 
