@@ -8,7 +8,7 @@ public class Vertex {
     private int x;
     private int y;
     private int came_from = -1;
-    private int path_val = 0;
+    private int path_val = 1000000;
     private int total_val = 1000000;
     private ArrayList<Edge> neighbours;
 
@@ -78,5 +78,13 @@ public class Vertex {
 
     public Edge getEdge(int pos){
         return neighbours.get(pos);
+    }
+
+    public void printVertex(){
+        System.out.print(label + " " + x + ";" + y + " " + num + ". Edges: ");
+        for(Edge edge : neighbours){
+            System.out.print(edge.getStart() + " " + edge.getFinish() + " : " + edge.getWeight() + " ||| ");
+        }
+        System.out.println();
     }
 }

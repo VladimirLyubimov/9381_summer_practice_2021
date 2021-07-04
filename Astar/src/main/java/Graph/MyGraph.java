@@ -45,6 +45,19 @@ public class MyGraph {
         return -1;
     }
 
+    public Vertex getVertex(int num){
+        return vertex_list.get(num);
+    }
+
+    public Vertex getVertex(String label){
+        int num = getNumByLabel(label);
+        if(num != -1) {
+            return vertex_list.get(num);
+        }
+
+        return null;
+    }
+
     public boolean isVertexExist(int num){
         for(Vertex vertex : vertex_list){
             if(vertex.getNum() == num){
@@ -71,12 +84,7 @@ public class MyGraph {
 
     public void printGraph(){
         for(Vertex vertex: vertex_list){
-            System.out.print(vertex.getLabel() + ": ");
-            int edge_amount =vertex.getEdgeAmount();
-            for(int i = 0; i < edge_amount; i++){
-                System.out.print(vertex.getEdge(i).getFinish() + " ");
-            }
-            System.out.println();
+            vertex.printVertex();
         }
     }
 }
