@@ -7,9 +7,9 @@ public class Vertex {
     private final int num;
     private int x;
     private int y;
-    private int came_from;
-    private int path_val;
-    private int total_val;
+    private int came_from = -1;
+    private int path_val = 0;
+    private int total_val = 1000000;
     private ArrayList<Edge> neighbours;
 
     public Vertex(String label, int num, int x, int y){
