@@ -72,6 +72,9 @@ public class Vertex {
     }
 
     public Edge getEdge(int pos){
+        if(pos < 0 || pos > 4){
+            return null;
+        }
         return neighbours.get(pos);
     }
 
@@ -87,7 +90,7 @@ public class Vertex {
 
         if(obj instanceof Vertex){
             Vertex ver = (Vertex) obj;
-            if(this.label.equals(ver.getLabel())){
+            if(label.equals(ver.getLabel()) && x == ver.getX() && y == ver.getY()){
                 return true;
             }
         }

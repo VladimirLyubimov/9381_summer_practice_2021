@@ -22,4 +22,20 @@ public class Edge {
     public String getStart(){
         return start;
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(this == obj){
+            return true;
+        }
+
+        if(obj instanceof Edge){
+            Edge edge = (Edge) obj;
+            if(start.equals(edge.getStart()) && finish.equals(edge.getFinish()) && weight == edge.getWeight()){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

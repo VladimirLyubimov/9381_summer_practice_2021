@@ -16,15 +16,23 @@ public class AWithStar {
         close_set = new ArrayList<Vertex>();
     }
 
-    public ArrayList<String> doAlgo(String start_label, String finish_label){
-        if(!graph.isVertexExist(start_label) || !graph.isVertexExist(finish_label)){
-            return null;
+    public ArrayList<String> doAlgo(String start_label, String finish_label) throws IndexOutOfBoundsException{
+        if(!graph.isVertexExist(start_label)){
+            throw new IndexOutOfBoundsException("Start vertex with name " + start_label + " doesn't exist!");
+        }
+
+        if(!graph.isVertexExist(finish_label)){
+            path = new ArrayList<String>();
+            path.add("No path! Finish vertex doesn't exist!");
+            return path;
         }
         //int start = graph.getNumByLabel(start_label);
         //int finish = graph.getNumByLabel(finish_label);
 
         if(start_label.equals(finish_label)){
-            return null;
+            path = new ArrayList<String>();
+            path.add("Start and finish vertexes are same!");
+            return path;
         }
 
         open_set.add(graph.getVertex(start_label));
@@ -81,7 +89,9 @@ public class AWithStar {
             open_set.remove(cur_vertex);
         }
 
-        return  null;
+        path = new ArrayList<String>();
+        path.add("No path!");
+        return path;
     }
 
     private Vertex findMin(){

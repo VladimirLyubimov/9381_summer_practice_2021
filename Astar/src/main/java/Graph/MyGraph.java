@@ -11,6 +11,7 @@ public class MyGraph {
     public MyGraph(){
         vertex_list = new ArrayList<Vertex>();
         graph_on_plot = new ArrayList<ArrayList<Integer>>();
+        size = 0;
     }
 
     /*public MyGraph(int vertex_count, int edge_count, int min_weight, int max_weight){
@@ -21,20 +22,29 @@ public class MyGraph {
         Min + (int)(Math.random() * ((Max - Min) + 1))
     }*/
 
-    public MyGraph(String[] edge_list, String[] vertex_list){
+    public MyGraph(String[] edge_list, String[] vertex_list) throws IOException{
         int edge_amount = edge_list.length;
         this.vertex_list = new ArrayList<Vertex>();
         size = 0;
 
         for(String vertex_note : vertex_list){
             String[] data = vertex_note.split("\\s");
-            this.vertex_list.add(new Vertex(data[0], Integer.parseInt(data[1]), Integer.parseInt(data[2])));
-            size += 1;
+            try {
+                addVertex(data[0], Integer.parseInt(data[1]), Integer.parseInt(data[2]));
+            }
+            catch(IOException err){
+                throw new IOException("Vertex with name " + data[0] + " already exists!");
+            }
         }
 
         for(String edge_note: edge_list){
             String[] data = edge_note.split("\\s");
-            getVertex(data[0]).addEdge(data[1], Integer.parseInt(data[2]));
+            try {
+                addEdge(data[0], data[1], Integer.parseInt(data[2]));
+            }
+            catch (IOException err){
+                throw new IOException("Unable to create edge from " + data[0] + " to " + data[1]);
+            }
         }
     }
 
@@ -53,8 +63,16 @@ public class MyGraph {
             throw new IOException("Vertex doesn't exist!");
         }
 
-       getVertex(start_label).addEdge(finish_label, weight);
-        size += 1;
+        if(getVertex(start_label).getEdgeAmount() == 4){
+            throw new IOException("Vertex " + start_label + " has 4 edges. No more edges excepted!");
+        }
+
+        int actual_weight = Math.abs(getVertex(start_label).getX() - getVertex(finish_label).getX()) + Math.abs(getVertex(start_label).getY() - getVertex(finish_label).getY());
+        if(weight != actual_weight){
+            throw new IOException("Wrong weight!");
+        }
+
+        getVertex(start_label).addEdge(finish_label, weight);
     }
 
     public void deleteVertex(String label) throws IndexOutOfBoundsException{
@@ -68,6 +86,7 @@ public class MyGraph {
                 }
             }
             vertex_list.remove(getNumByLabel(label));
+            size -= 1;
         }
         else{
             throw new IndexOutOfBoundsException("Vertex with name " + label + " doesn't exist!");
@@ -77,6 +96,10 @@ public class MyGraph {
     public void deleteEdge(String start_label, String finish_label) throws IndexOutOfBoundsException{
         if(!isVertexExist(start_label)){
             throw new IndexOutOfBoundsException("Vertex with name " + start_label + " doesn't exist!");
+        }
+
+        if(!isVertexExist(finish_label)){
+            throw new IndexOutOfBoundsException("Vertex with name " + finish_label + " doesn't exist!");
         }
 
         Vertex start_vertex = getVertex(start_label);
@@ -123,6 +146,10 @@ public class MyGraph {
 
     public boolean isVertexExist(int x, int y){
         return graph_on_plot.get(y).get(x) != 0;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     @Override
