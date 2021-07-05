@@ -48,6 +48,14 @@ public class MyGraph {
         }
     }
 
+    public void resetGraph(){
+        for(Vertex vertex : vertex_list){
+            vertex.setTotalVal(1000000);
+            vertex.setPathVal(1000000);
+            vertex.setCameFrom("");
+        }
+    }
+
     public void addVertex(String label, int x, int y) throws IOException {
         if(isVertexExist(label)){
             throw new IOException("Vertex with name " + label + " already exists!");

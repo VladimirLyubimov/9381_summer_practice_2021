@@ -3,6 +3,7 @@ package Algo;
 import Graph.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class AWithStar {
     private MyGraph graph;
@@ -12,6 +13,13 @@ public class AWithStar {
 
     public AWithStar(MyGraph graph){
         this.graph = graph;
+        open_set = new ArrayList<Vertex>();
+        close_set = new ArrayList<Vertex>();
+    }
+
+    public void resetAlgo(){
+        graph.resetGraph();
+        path = null;
         open_set = new ArrayList<Vertex>();
         close_set = new ArrayList<Vertex>();
     }
@@ -114,5 +122,7 @@ public class AWithStar {
             path.add(prev);
             prev = graph.getVertex(prev).getCameFrom();
         }
+
+        Collections.reverse(path);
     }
 }
