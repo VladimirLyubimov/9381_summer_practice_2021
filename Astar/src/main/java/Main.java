@@ -7,39 +7,44 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hi");
-        String[] edges = new String[] {"A B 2", "A E 2", "B D 1", "D C 1", "B A 2", "E A 2", "D B 1", "C D 1", "E F 1", "D F 4"};
-        String[] vertexes = new String[] {"A 0 0", "B 2 0" , "D 2 1", "C 1 1", "E 0 2", "F 0 3", "T 5 0"};
+        String[] edges = new String[] {"A B 2", "A C 2", "B D 2", "B E 2", "D F 3", "E H 3", "F I 4", "F J 2", "I K 3", "J L 1", "H J 2", "L K 4"};
+        String[] vertexes = new String[] {"A 0 0", "B 2 0" , "C 0 2", "D 4 0", "E 2 2", "F 4 3", "I 8 3", "J 4 5", "H 2 5", "K 8 6", "L 4 6"};
         MyGraph graph = new MyGraph(edges, vertexes);
-        graph.printGraph();
+        System.out.print(graph);
 
-        graph.deleteVertex("C");
+        //graph.deleteVertex("C");
 
         try{
-            graph.addVertex("H", 1, 3);
+            graph.addVertex("T", 3, 0);
+            graph.addEdge("T", "D", 1);
+            graph.addEdge("B", "T", 1);
+            graph.deleteEdge("B", "D");
         }
         catch (IOException err){
-
+            return;
         }
 
-        try{
+        /*try{
             graph.addEdge("F", "H", 1);
         }
         catch (IOException err){
 
-        }
+        }*/
 
-        graph.printGraph();
+        //System.out.print(graph);
 
         AWithStar algo = new AWithStar(graph);
-        ArrayList<Integer> path = algo.doAlgo("A", "H");
+        ArrayList<String> path = algo.doAlgo("A", "K");
         if(path == null){
             System.out.println("No path!");
             return;
         }
 
-        for(int num : path){
-            System.out.print(num + " ");
+        for(String label : path){
+            System.out.print(label + " ");
         }
         System.out.println();
+
+        System.out.print(graph);
     }
 }

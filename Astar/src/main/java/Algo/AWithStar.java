@@ -6,47 +6,46 @@ import java.util.ArrayList;
 
 public class AWithStar {
     private MyGraph graph;
-    private ArrayList<Integer> open_set;
-    private ArrayList<Integer> close_set;
-    private ArrayList<Integer> path;
+    private ArrayList<Vertex> open_set;
+    private ArrayList<Vertex> close_set;
+    private ArrayList<String> path;
 
     public AWithStar(MyGraph graph){
         this.graph = graph;
-        open_set = new ArrayList<Integer>();
-        close_set = new ArrayList<Integer>();
+        open_set = new ArrayList<Vertex>();
+        close_set = new ArrayList<Vertex>();
     }
 
-    public ArrayList<Integer> doAlgo(String start_label, String finish_label){
+    public ArrayList<String> doAlgo(String start_label, String finish_label){
         if(!graph.isVertexExist(start_label) || !graph.isVertexExist(finish_label)){
             return null;
         }
-        int start = graph.getNumByLabel(start_label);
-        int finish = graph.getNumByLabel(finish_label);
+        //int start = graph.getNumByLabel(start_label);
+        //int finish = graph.getNumByLabel(finish_label);
 
-        if(start == finish){
+        if(start_label.equals(finish_label)){
             return null;
         }
 
-        open_set.add(start);
+        open_set.add(graph.getVertex(start_label));
 
-        int f_x = graph.getVertex(finish).getX();
-        int f_y = graph.getVertex(finish).getY();
-        graph.getVertex(start).setPathVal(0);
-        graph.getVertex(start).setTotalVal(0);
+        int f_x = graph.getVertex(finish_label).getX();
+        int f_y = graph.getVertex(finish_label).getY();
+        graph.getVertex(start_label).setPathVal(0);
+        graph.getVertex(start_label).setTotalVal(0);
 
         while(!open_set.isEmpty()){
-            int cur_node = findMin();
+            Vertex cur_vertex = findMin();
 
-            if(cur_node == finish){
-                makPath(finish);
+            if(cur_vertex.getLabel().equals(finish_label)){
+                makPath(finish_label);
                 return path;
             }
 
-            int neighbour_amount = graph.getVertex(cur_node).getEdgeAmount();
-            Vertex cur_vertex = graph.getVertex(cur_node);
+            int neighbour_amount = cur_vertex.getEdgeAmount();
             for(int i = 0; i < neighbour_amount; i++){
                 Edge cur_edge = cur_vertex.getEdge(i);
-                int cur_neighbour = cur_edge.getFinish();
+                Vertex cur_neighbour = graph.getVertex(cur_edge.getFinish());
                 //System.out.println(cur_neighbour);
 
                 if(close_set.contains(cur_neighbour)){
@@ -65,44 +64,43 @@ public class AWithStar {
 
                 //System.out.println(cur_node + " " + cur_neighbour + " " + graph.getVertex(cur_neighbour).getPathVal());
 
-                if(temp_path_val < graph.getVertex(cur_neighbour).getPathVal()){
+                if(temp_path_val < cur_neighbour.getPathVal()){
                     //System.out.println(cur_node + " " + cur_neighbour + " " + temp_path_val);
                     need_update = true;
                 }
 
                 if(need_update){
-                    Vertex cur_neighbour_vertex = graph.getVertex(cur_neighbour);
-                    cur_neighbour_vertex.setCameFrom(cur_node);
-                    cur_neighbour_vertex.setPathVal(temp_path_val);
-                    int heuristic = Math.abs(cur_neighbour_vertex.getX() - f_x) + Math.abs(cur_neighbour_vertex.getY() - f_y);
-                    cur_neighbour_vertex.setTotalVal(temp_path_val + heuristic);
+                    cur_neighbour.setCameFrom(cur_vertex.getLabel());
+                    cur_neighbour.setPathVal(temp_path_val);
+                    int heuristic = Math.abs(cur_neighbour.getX() - f_x) + Math.abs(cur_neighbour.getY() - f_y);
+                    cur_neighbour.setTotalVal(temp_path_val + heuristic);
                 }
             }
 
-            close_set.add(cur_node);
-            open_set.remove(Integer.valueOf(cur_node));
+            close_set.add(cur_vertex);
+            open_set.remove(cur_vertex);
         }
 
         return  null;
     }
 
-    private int findMin(){
-        int res = open_set.get(0);
-        for(int num: open_set){
-            if(graph.getVertex(res).getTotalVal() > graph.getVertex(num).getTotalVal()){
-                res = num;
+    private Vertex findMin(){
+        Vertex res = open_set.get(0);
+        for(Vertex vertex: open_set){
+            if(res.getTotalVal() > vertex.getTotalVal()){
+                res = vertex;
             }
         }
 
         return res;
     }
 
-    private void makPath(int finish){
-        int prev = graph.getVertex(finish).getCameFrom();
-        path = new ArrayList<Integer>();
+    private void makPath(String finish){
+        String prev = graph.getVertex(finish).getCameFrom();
+        path = new ArrayList<String>();
         path.add(finish);
 
-        while(prev != -1){
+        while(!prev.equals("")){
             path.add(prev);
             prev = graph.getVertex(prev).getCameFrom();
         }

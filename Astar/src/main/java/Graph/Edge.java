@@ -1,11 +1,11 @@
 package Graph;
 
 public class Edge {
-    private final int start;
-    private final int finish;
+    private final String start;
+    private final String finish;
     private final int weight;
 
-    public Edge(int start, int finish, int weight){
+    public Edge(String start, String finish, int weight){
         this.start = start;
         this.finish= finish;
         this.weight = weight;
@@ -15,11 +15,11 @@ public class Edge {
         return weight;
     }
 
-    public int getFinish(){
+    public String getFinish(){
         return finish;
     }
 
-    public int getStart(){
+    public String getStart(){
         return start;
     }
 }
