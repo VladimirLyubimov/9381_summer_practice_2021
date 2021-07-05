@@ -9,7 +9,6 @@ public class Vertex {
     private String came_from = "";
     private int path_val = 1000000;
     private int total_val = 1000000;
-    private boolean exist = true;
     private ArrayList<Edge> neighbours;
 
     public Vertex(String label, int x, int y){
