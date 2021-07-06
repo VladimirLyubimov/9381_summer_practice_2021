@@ -53,6 +53,19 @@ public class AWithStar {
         while(!open_set.isEmpty()){
             Vertex cur_vertex = findMin();
 
+            System.out.println("Current vertex is: " + cur_vertex.getLabel());
+            System.out.print("Open set is: ");
+            for(Vertex vertex : open_set){
+                System.out.print(vertex.getLabel() + " ");
+            }
+            System.out.println();
+            System.out.print("Close set is: ");
+            for(Vertex vertex : close_set){
+                System.out.print(vertex.getLabel() + " ");
+            }
+            System.out.println("\n-------");
+
+
             if(cur_vertex.getLabel().equals(finish_label)){
                 makPath(finish_label);
                 return path;

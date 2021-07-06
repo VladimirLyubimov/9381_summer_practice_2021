@@ -142,6 +142,10 @@ public class MyGraph {
         return null;
     }
 
+    public Vertex getVertex(int num){
+        return vertex_list.get(num);
+    }
+
     public boolean isVertexExist(String label){
         for(Vertex vertex : vertex_list){
             if(vertex.getLabel().equals(label)){

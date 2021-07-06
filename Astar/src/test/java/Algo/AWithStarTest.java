@@ -5,13 +5,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static org.junit.Assert.*;
 
 public class AWithStarTest {
     private AWithStar algo;
     private MyGraph graph;
+    private Logger logger = LogManager.getLogger();
 
     @Before
     public void setUp() throws Exception {
@@ -21,6 +23,7 @@ public class AWithStarTest {
             graph = new MyGraph(edges, vertexes);
         }
         catch (IOException err){
+            logger.error(err.getMessage());
         }
         algo = new AWithStar(graph);
     }
@@ -37,6 +40,7 @@ public class AWithStarTest {
             assertEquals(expected_path, actual_path);
         }
         catch (IndexOutOfBoundsException err){
+            logger.error(err.getMessage());
             assertEquals(1,0);
         }
 
@@ -49,6 +53,7 @@ public class AWithStarTest {
             assertEquals(expected_path, actual_path);
         }
         catch (IndexOutOfBoundsException err){
+            logger.error(err.getMessage());
             assertEquals(1,0);
         }
 
@@ -60,6 +65,7 @@ public class AWithStarTest {
             assertEquals(expected_path, actual_path);
         }
         catch (IndexOutOfBoundsException err){
+            logger.error(err.getMessage());
             assertEquals(1,0);
         }
 
@@ -72,6 +78,7 @@ public class AWithStarTest {
             assertEquals(expected_path, actual_path);
         }
         catch (IndexOutOfBoundsException err){
+            logger.error(err.getMessage());
             assertEquals(1,0);
         }
 
@@ -83,6 +90,7 @@ public class AWithStarTest {
             assertEquals(1,0);
         }
         catch (IndexOutOfBoundsException err){
+            logger.error(err.getMessage());
             assertEquals(1,1);
         }
     }
