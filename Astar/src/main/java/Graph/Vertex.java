@@ -15,7 +15,7 @@ public class Vertex {
         this.label = label;;
         this.x = x;
         this.y = y;
-        neighbours = new ArrayList<Edge>();
+        neighbours = new ArrayList<>();
     }
 
     public String getLabel() {

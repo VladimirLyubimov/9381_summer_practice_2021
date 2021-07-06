@@ -79,7 +79,7 @@ public class AWithStar {
 
 
             if(cur_vertex.getLabel().equals(finish_label)){
-                makPath(finish_label);
+                makePath(finish_label);
                 return path;
             }
 
@@ -138,7 +138,7 @@ public class AWithStar {
         return res;
     }
 
-    private void makPath(String finish){
+    private void makePath(String finish){
         String prev = graph.getVertex(finish).getCameFrom();
         path = new ArrayList<String>();
         path.add(finish);

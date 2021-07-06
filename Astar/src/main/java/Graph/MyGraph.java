@@ -9,8 +9,8 @@ public class MyGraph {
     private int size = 0;
 
     public MyGraph(){
-        vertex_list = new ArrayList<Vertex>();
-        graph_on_plot = new ArrayList<ArrayList<Integer>>();
+        vertex_list = new ArrayList<>();
+        graph_on_plot = new ArrayList<>();
         size = 0;
     }
 
@@ -24,7 +24,7 @@ public class MyGraph {
 
     public MyGraph(String[] edge_list, String[] vertex_list) throws IOException{
         int edge_amount = edge_list.length;
-        this.vertex_list = new ArrayList<Vertex>();
+        this.vertex_list = new ArrayList<>();
         size = 0;
 
         for(String vertex_note : vertex_list){
@@ -86,12 +86,7 @@ public class MyGraph {
     public void deleteVertex(String label) throws IndexOutOfBoundsException{
         if(isVertexExist(label)){
             for(Vertex vertex : vertex_list){
-                try{
-                    deleteEdge(vertex.getLabel(), label);
-                }
-                catch (IndexOutOfBoundsException err){
-
-                }
+                delEdge(vertex.getLabel(), label);
             }
             vertex_list.remove(getNumByLabel(label));
             size -= 1;
@@ -99,6 +94,19 @@ public class MyGraph {
         else{
             throw new IndexOutOfBoundsException("Vertex with name " + label + " doesn't exist!");
         }
+    }
+
+    private boolean delEdge(String start_label, String finish_label){
+        Vertex start_vertex = getVertex(start_label);
+        int edge_count = start_vertex.getEdgeAmount();
+        for(int i= 0; i < edge_count; i++){
+            if(start_vertex.getEdge(i).getFinish().equals(finish_label)){
+                start_vertex.deleteEdge(i);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void deleteEdge(String start_label, String finish_label) throws IndexOutOfBoundsException{
@@ -110,16 +118,9 @@ public class MyGraph {
             throw new IndexOutOfBoundsException("Vertex with name " + finish_label + " doesn't exist!");
         }
 
-        Vertex start_vertex = getVertex(start_label);
-        int edge_count = start_vertex.getEdgeAmount();
-        for(int i= 0; i < edge_count; i++){
-            if(start_vertex.getEdge(i).getFinish().equals(finish_label)){
-                start_vertex.deleteEdge(i);
-                return;
-            }
+        if(!delEdge(start_label, finish_label)) {
+            throw new IndexOutOfBoundsException("No such edge exists!");
         }
-
-        throw new IndexOutOfBoundsException("No such edge exists!");
     }
 
     private int getNumByLabel(String label){
@@ -135,11 +136,7 @@ public class MyGraph {
 
     public Vertex getVertex(String label){
         int num = getNumByLabel(label);
-        if(num != -1) {
-            return vertex_list.get(num);
-        }
-
-        return null;
+        return vertex_list.get(num);
     }
 
     public Vertex getVertex(int num){
@@ -166,11 +163,11 @@ public class MyGraph {
 
     @Override
     public String toString(){
-        String st = new String("");
+        StringBuilder st = new StringBuilder(new String(""));
         for(Vertex vertex: vertex_list){
-            st += vertex.toString() + "\n";
+            st.append(vertex.toString()).append("\n");
         }
 
-        return st;
+        return st.toString();
     }
 }
