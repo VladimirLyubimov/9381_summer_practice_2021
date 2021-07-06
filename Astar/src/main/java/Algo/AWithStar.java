@@ -10,9 +10,13 @@ public class AWithStar {
     private ArrayList<Vertex> open_set;
     private ArrayList<Vertex> close_set;
     private ArrayList<String> path;
+    private String start;
+    private  String finish;
 
-    public AWithStar(MyGraph graph){
+    public AWithStar(MyGraph graph, String start_label, String finish_label){
         this.graph = graph;
+        this.start = start_label;
+        this.finish = finish_label;
         open_set = new ArrayList<Vertex>();
         close_set = new ArrayList<Vertex>();
     }
@@ -22,6 +26,14 @@ public class AWithStar {
         path = null;
         open_set = new ArrayList<Vertex>();
         close_set = new ArrayList<Vertex>();
+    }
+
+    public String getFinish() {
+        return finish;
+    }
+
+    public String getStart() {
+        return start;
     }
 
     public ArrayList<String> doAlgo(String start_label, String finish_label) throws IndexOutOfBoundsException{

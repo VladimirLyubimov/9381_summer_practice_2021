@@ -25,7 +25,7 @@ public class AWithStarTest {
         catch (IOException err){
             logger.error(err.getMessage());
         }
-        algo = new AWithStar(graph);
+        algo = new AWithStar(graph, "A", "B");
     }
 
     @Test

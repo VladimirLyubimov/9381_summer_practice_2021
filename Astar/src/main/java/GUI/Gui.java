@@ -1,5 +1,8 @@
 package GUI;
 
+import Algo.AWithStar;
+import GUI.ButtonAction.FinishAlgoAction;
+import GUI.ButtonAction.RestartAlgoAction;
 import Graph.MyGraph;
 
 import javax.swing.*;
@@ -7,7 +10,7 @@ import java.awt.*;
 
 public class Gui {
     private JFrame window;
-    private MyCanvas grah_drawer;
+    private MyCanvas graph_drawer;
 
     private JButton random_grah;
     private JButton from_file;
@@ -23,14 +26,19 @@ public class Gui {
     private JTextField edge_amount;
     private JTextField min_max_weight;
 
-    public Gui(MyGraph graph){
+    private AWithStar algo;
+    private MyGraph graph;
+
+    public Gui(MyGraph graph, AWithStar algo){
+        this.graph = graph;
+        this.algo = algo;
         window = new JFrame("Practise project");
         window.setSize(1200, 600);
         window.setLayout(null);
 
-        grah_drawer = new MyCanvas(graph);
-        grah_drawer.setBounds(0,0, 600, 600);
-        window.add(grah_drawer);
+        graph_drawer = new MyCanvas(this.graph);
+        graph_drawer.setBounds(0,0, 600, 600);
+        window.add(graph_drawer);
 
         Font font = new Font("Arial", Font.PLAIN, 12);
         Insets inset = new Insets(0,0,0,0);
@@ -51,25 +59,27 @@ public class Gui {
         step_forward = new JButton("Step forward");
         step_forward.setFont(font);
         step_forward.setMargin(inset);
-        step_forward.setBounds(610, 350, 200, 30);
+        step_forward.setBounds(860, 350, 200, 30);
         window.add(step_forward);
 
         step_back = new JButton("Step back");
         step_back.setFont(font);
         step_back.setMargin(inset);
-        step_back.setBounds(860, 350, 200, 30);
+        step_back.setBounds(610, 350, 200, 30);
         window.add(step_back);
 
-        go_end = new JButton("Go to end");
+        go_end = new JButton(new FinishAlgoAction(this.algo));
+        go_end.setText("Go to end");
         go_end.setFont(font);
         go_end.setMargin(inset);
-        go_end.setBounds(610, 400, 200, 30);
+        go_end.setBounds(860, 400, 200, 30);
         window.add(go_end);
 
-        go_start = new JButton("Go to start");
+        go_start = new JButton(new RestartAlgoAction(this.algo));
+        go_start.setText("Go to start");
         go_start.setFont(font);
         go_start.setMargin(inset);
-        go_start.setBounds(860, 400, 200, 30);
+        go_start.setBounds(610, 400, 200, 30);
         window.add(go_start);
 
         add_vertex = new JButton("Add vertex");
