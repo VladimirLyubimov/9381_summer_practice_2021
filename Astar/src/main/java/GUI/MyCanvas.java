@@ -4,16 +4,88 @@ import Graph.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
+import java.io.IOException;
 
-public class MyCanvas extends JComponent {
+public class MyCanvas extends JComponent implements MouseListener{
     private MyGraph graph;
     private int step = 60;
     private int shift = step/8;
     private int cshift = step/2 - 1;
+    private int start_x = 0;
+    private int start_y = 0;
+    private int finish_x = 0;
+    private int finish_y = 0;
+    private int button = 1;
+    private int append_click = 0;
 
     public MyCanvas(MyGraph graph){
+        addMouseListener(this);
         this.graph = graph;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        if(button == 1) {
+            int x = mouseEvent.getX() / step;
+            int y = mouseEvent.getY() / step;
+            if (graph.getVertex(x, y).isEmpty()) {
+                graph.addVertex(graph.getSize() + "", x, y);
+                repaint();
+            } else {
+                System.out.println("Already exists");
+            }
+        }
+        if(append_click == 2){
+            button = 1;
+            append_click = 0;
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+        if(button == 1) {
+            start_x = mouseEvent.getX()/step;
+            start_y = mouseEvent.getY()/step;
+        }
+        if(mouseEvent.getButton() == MouseEvent.BUTTON3){
+            button = 2;
+            append_click += 1;
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+        finish_x = mouseEvent.getX()/step;
+        finish_y = mouseEvent.getY()/step;
+        if(button == 2 && append_click == 2){
+            Vertex start, finish;
+            if(graph.getVertex(start_x, start_y).isPresent() & graph.getVertex(finish_x, finish_y).isPresent() && (start_x != finish_x || start_y != finish_y)) {
+                start = graph.getVertex(start_x, start_y).get();
+                finish = graph.getVertex(finish_x, finish_y).get();
+                int weight = Math.abs(start.getX() - finish.getX()) + Math.abs(start.getY() - finish.getY());
+                try{graph.addEdge(start.getLabel(), finish.getLabel(), weight);}
+                catch (IOException err){
+
+                }
+                repaint();
+            }
+            else{
+                System.out.println("Fail");
+            }
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+
     }
 
     @Override

@@ -84,7 +84,7 @@ public class MyGraphTest {
             assertEquals(expected, actualCount);
             assertEquals(expectedVertex, defaultGraph.getVertex(name).get());
         }
-        catch (IOException err){
+        catch (IndexOutOfBoundsException err){
             logger.error(err.getMessage());
             assertEquals(0,1);
         }
@@ -94,7 +94,7 @@ public class MyGraphTest {
             defaultGraph.addVertex(name, x, y);
             assertEquals(1,0);
         }
-        catch (IOException err){
+        catch (IndexOutOfBoundsException err){
             logger.error(err.getMessage());
             assertEquals(1,1);
         }

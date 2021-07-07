@@ -119,8 +119,8 @@ public class MyGraph {
             try {
                 addVertex(data[0], Integer.parseInt(data[1]), Integer.parseInt(data[2]));
             }
-            catch(IOException err){
-                throw new IOException("Vertex with name " + data[0] + " already exists!");
+            catch(IndexOutOfBoundsException err){
+                throw new IndexOutOfBoundsException("Vertex with name " + data[0] + " already exists!");
             }
         }
 
@@ -170,9 +170,9 @@ public class MyGraph {
         }
     }
 
-    public void addVertex(String label, int x, int y) throws IOException {
+    public void addVertex(String label, int x, int y) throws IndexOutOfBoundsException {
         if(isVertexExist(label)){
-            throw new IOException("Vertex with name " + label + " already exists!");
+            throw new IndexOutOfBoundsException("Vertex with name " + label + " already exists!");
         }
         else {
             vertex_list.add(new Vertex(label, x, y));
