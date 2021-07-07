@@ -4,16 +4,16 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
-import Algo.AWithStar;
+import Graph.MyGraph;
 
 public class RestartAlgoAction extends AbstractAction {
-    private AWithStar algo;
+    private MyGraph graph;
 
-    public RestartAlgoAction(AWithStar algo){
-        this.algo = algo;
+    public RestartAlgoAction(MyGraph graph){
+        this.graph = graph;
     }
     public void actionPerformed(ActionEvent event) {
-        algo.resetAlgo();
+        graph.resetGraph();
         System.out.println("Return to the start. Algorithm and graph returned to original state!");
     }
 }

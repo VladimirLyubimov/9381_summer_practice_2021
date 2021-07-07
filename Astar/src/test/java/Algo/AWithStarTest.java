@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import static org.junit.Assert.*;
 
 public class AWithStarTest {
-    private AWithStar algo;
     private MyGraph graph;
     private Logger logger = LogManager.getLogger();
 
@@ -25,7 +24,7 @@ public class AWithStarTest {
         catch (IOException err){
             logger.error(err.getMessage());
         }
-        algo = new AWithStar(graph, "A", "B");
+        graph.resetGraph();
     }
 
     @Test
@@ -36,7 +35,7 @@ public class AWithStarTest {
         String actual_path;
 
         try{
-            actual_path = algo.doAlgo(start, finish).toString();
+            actual_path = AWithStar.doAlgo(graph, start, finish).toString();
             assertEquals(expected_path, actual_path);
         }
         catch (IndexOutOfBoundsException err){
@@ -44,12 +43,12 @@ public class AWithStarTest {
             assertEquals(1,0);
         }
 
-        algo.resetAlgo();
+        graph.resetGraph();
         start = "C";
         finish = "K";
         expected_path = "[No path!]";
         try{
-            actual_path = algo.doAlgo(start, finish).toString();
+            actual_path = AWithStar.doAlgo(graph, start, finish).toString();
             assertEquals(expected_path, actual_path);
         }
         catch (IndexOutOfBoundsException err){
@@ -57,11 +56,11 @@ public class AWithStarTest {
             assertEquals(1,0);
         }
 
-        algo.resetAlgo();
+        graph.resetGraph();
         start = "K";
         expected_path = "[Start and finish vertexes are same!]";
         try{
-            actual_path = algo.doAlgo(start, finish).toString();
+            actual_path = AWithStar.doAlgo(graph, start, finish).toString();
             assertEquals(expected_path, actual_path);
         }
         catch (IndexOutOfBoundsException err){
@@ -69,12 +68,12 @@ public class AWithStarTest {
             assertEquals(1,0);
         }
 
-        algo.resetAlgo();
+        graph.resetGraph();
         start = "A";
         finish = "O";
         expected_path = "[No path! Finish vertex doesn't exist!]";
         try{
-            actual_path = algo.doAlgo(start, finish).toString();
+            actual_path = AWithStar.doAlgo(graph, start, finish).toString();
             assertEquals(expected_path, actual_path);
         }
         catch (IndexOutOfBoundsException err){
@@ -82,11 +81,11 @@ public class AWithStarTest {
             assertEquals(1,0);
         }
 
-        algo.resetAlgo();
+        graph.resetGraph();
         start = "U";
         finish = "K";
         try{
-            actual_path = algo.doAlgo(start, finish).toString();
+            actual_path = AWithStar.doAlgo(graph, start, finish).toString();
             assertEquals(1,0);
         }
         catch (IndexOutOfBoundsException err){

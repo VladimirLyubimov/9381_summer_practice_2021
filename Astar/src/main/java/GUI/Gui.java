@@ -26,12 +26,14 @@ public class Gui {
     private JTextField edge_amount;
     private JTextField min_max_weight;
 
-    private AWithStar algo;
     private MyGraph graph;
+    private String start;
+    private String finish;
 
-    public Gui(MyGraph graph, AWithStar algo){
+    public Gui(MyGraph graph, String start, String finish){
         this.graph = graph;
-        this.algo = algo;
+        this.start =start;
+        this.finish = finish;
         window = new JFrame("Practise project");
         window.setSize(1200, 600);
         window.setLayout(null);
@@ -68,14 +70,14 @@ public class Gui {
         step_back.setBounds(610, 350, 200, 30);
         window.add(step_back);
 
-        go_end = new JButton(new FinishAlgoAction(this.algo));
+        go_end = new JButton(new FinishAlgoAction(this.graph, this.start, this.finish));
         go_end.setText("Go to end");
         go_end.setFont(font);
         go_end.setMargin(inset);
         go_end.setBounds(860, 400, 200, 30);
         window.add(go_end);
 
-        go_start = new JButton(new RestartAlgoAction(this.algo));
+        go_start = new JButton(new RestartAlgoAction(this.graph));
         go_start.setText("Go to start");
         go_start.setFont(font);
         go_start.setMargin(inset);

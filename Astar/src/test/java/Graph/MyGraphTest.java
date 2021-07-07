@@ -109,7 +109,7 @@ public class MyGraphTest {
 
         try{
             defaultGraph.addEdge(start, finish, weight);
-            Vertex start_vertex = defaultGraph.getVertex(start);
+            Vertex start_vertex = defaultGraph.getVertex(start).get();
             assertEquals(expectedEdge, start_vertex.getEdge(start_vertex.getEdgeAmount()-1));
         }
         catch (IOException err){
@@ -202,12 +202,12 @@ public class MyGraphTest {
     public void deleteEdge() {
         String start = "A";
         String finish = "B";
-        int expected_edge_count = defaultGraph.getVertex(start).getEdgeAmount() - 1;
+        int expected_edge_count = defaultGraph.getVertex(start).get().getEdgeAmount() - 1;
         int actual_edge_count = 0;
 
         try{
             defaultGraph.deleteEdge(start,finish);
-            actual_edge_count = defaultGraph.getVertex(start).getEdgeAmount();
+            actual_edge_count = defaultGraph.getVertex(start).get().getEdgeAmount();
             assertEquals(expected_edge_count, actual_edge_count);
         }
         catch (IndexOutOfBoundsException err){

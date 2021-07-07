@@ -2,6 +2,7 @@ package Graph;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class MyGraph {
     private ArrayList<Vertex> vertex_list;
@@ -71,16 +72,16 @@ public class MyGraph {
             throw new IOException("Vertex doesn't exist!");
         }
 
-        if(getVertex(start_label).getEdgeAmount() == 4){
+        if(getVertex(start_label).get().getEdgeAmount() == 4){
             throw new IOException("Vertex " + start_label + " has 4 edges. No more edges excepted!");
         }
 
-        int actual_weight = Math.abs(getVertex(start_label).getX() - getVertex(finish_label).getX()) + Math.abs(getVertex(start_label).getY() - getVertex(finish_label).getY());
+        int actual_weight = Math.abs(getVertex(start_label).get().getX() - getVertex(finish_label).get().getX()) + Math.abs(getVertex(start_label).get().getY() - getVertex(finish_label).get().getY());
         if(weight != actual_weight){
             throw new IOException("Wrong weight!");
         }
 
-        getVertex(start_label).addEdge(finish_label, weight);
+        getVertex(start_label).get().addEdge(finish_label, weight);
     }
 
     public void deleteVertex(String label) throws IndexOutOfBoundsException{
@@ -97,7 +98,7 @@ public class MyGraph {
     }
 
     private boolean delEdge(String start_label, String finish_label){
-        Vertex start_vertex = getVertex(start_label);
+        Vertex start_vertex = getVertex(start_label).get();
         int edge_count = start_vertex.getEdgeAmount();
         for(int i= 0; i < edge_count; i++){
             if(start_vertex.getEdge(i).getFinish().equals(finish_label)){
@@ -134,9 +135,13 @@ public class MyGraph {
         return -1;
     }
 
-    public Vertex getVertex(String label){
+    public Optional<Vertex> getVertex(String label){
         int num = getNumByLabel(label);
-        return vertex_list.get(num);
+        if(num != -1) {
+            return Optional.ofNullable(vertex_list.get(num));
+        }
+
+        return Optional.ofNullable(null);
     }
 
     public Vertex getVertex(int num){

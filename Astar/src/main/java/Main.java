@@ -43,7 +43,6 @@ public class Main {
 
         //System.out.print(graph);
 
-        AWithStar algo = new AWithStar(graph, "AGH", "K");
         ArrayList<String> path;
         /*try {
             path = algo.doAlgo("AGH", "K");
@@ -59,6 +58,6 @@ public class Main {
         System.out.println();*/
 
         System.out.print(graph);
-        Gui gui = new Gui(graph, algo);
+        Gui gui = new Gui(graph, "AGH", "K");
     }
 }
