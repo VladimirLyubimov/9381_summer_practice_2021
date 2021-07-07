@@ -35,7 +35,7 @@ public class Gui {
         this.start =start;
         this.finish = finish;
         window = new JFrame("Practise project");
-        window.setSize(1200, 600);
+        window.setSize(1200, 650);
         window.setLayout(null);
 
         graph_drawer = new MyCanvas(this.graph);

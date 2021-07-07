@@ -57,7 +57,9 @@ public class Main {
         }
         System.out.println();*/
 
+        //graph = new MyGraph(25, 48, 1, 2);
+        graph = new MyGraph(100);
         System.out.print(graph);
-        Gui gui = new Gui(graph, "AGH", "K");
+        Gui gui = new Gui(graph, "100", "1");
     }
 }

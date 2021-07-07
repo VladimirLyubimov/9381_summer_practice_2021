@@ -8,6 +8,9 @@ public class MyGraph {
     private ArrayList<Vertex> vertex_list;
     private ArrayList<ArrayList<Integer>> graph_on_plot;
     private int size = 0;
+    private int max_width = 600;//canvas width
+    private int max_height = 600;//canvas height
+    private int step = 60;
 
     public MyGraph(){
         vertex_list = new ArrayList<>();
@@ -15,13 +18,96 @@ public class MyGraph {
         size = 0;
     }
 
-    /*public MyGraph(int vertex_count, int edge_count, int min_weight, int max_weight){
-        for (int i = 0; i < vertex_count; i++){
-            vertex_list.add(new Vertex(String.valueOf(i+1), i, i, i));
+    public MyGraph(int vertex_count) throws  IndexOutOfBoundsException{//build graph where all edge weights are 1 and all vertexes linked
+        if(vertex_count > (max_width/step) * (max_height/step)){
+            throw new IndexOutOfBoundsException("You want too much vertexes!");
         }
 
-        Min + (int)(Math.random() * ((Max - Min) + 1))
-    }*/
+        vertex_list = new ArrayList<>();
+        for(int i = 0; i < max_height/step && vertex_count > 0; i++){
+            for(int j = 0; j < max_width/step && vertex_count > 0; j++) {
+                vertex_list.add(new Vertex(vertex_count + "", j, i));
+                vertex_count -= 1;
+                size += 1;
+            }
+        }
+
+        int x;
+        int y;
+        for(Vertex vertex : vertex_list){
+            x = vertex.getX();
+            y = vertex.getY();
+            if(getVertex(x+1,y).isPresent()){
+                vertex.addEdge(getVertex(x+1,y).get().getLabel(), 1);
+            }
+            if(getVertex(x-1,y).isPresent()){
+                vertex.addEdge(getVertex(x-1,y).get().getLabel(), 1);
+            }
+            if(getVertex(x,y+1).isPresent()){
+                vertex.addEdge(getVertex(x,y+1).get().getLabel(), 1);
+            }
+            if(getVertex(x,y-1).isPresent()){
+                vertex.addEdge(getVertex(x,y-1).get().getLabel(), 1);
+            }
+        }
+    }
+
+    public MyGraph(int vertex_count, int edge_count, int min_weight, int max_weight) throws IndexOutOfBoundsException{
+        if(!checkParamForRandomGer(vertex_count, edge_count, max_weight)){
+            throw new IndexOutOfBoundsException("Invalid input data!");
+        }
+        vertex_list = new ArrayList<>();
+        int x = 0;
+        int y = 0;
+        int max_y = 0;
+        int max_x = 0;
+
+        Vertex temp_root = new Vertex(vertex_count+"", x, y);
+        vertex_list.add(temp_root);
+        size += 1;
+        vertex_count -= 1;
+        while(vertex_count > 0){
+            int edge_weight = min_weight + (int)(Math.random() * ((max_weight - min_weight) + 1));
+            if(edge_weight + y < max_height/step){
+                if(x == 0){
+                    edge_weight = max_weight;
+                }
+                else{
+                    if(edge_weight != min_weight){
+                        edge_weight -= 1;
+                    }
+                }
+                vertex_list.add(new Vertex(vertex_count+"", x, y + edge_weight));
+                temp_root.addEdge(vertex_count+"", edge_weight);
+                size += 1;
+                vertex_count -= 1;
+                if(vertex_count == 0){
+                    break;
+                }
+                if(y + edge_weight > max_y){
+                    max_y = y+edge_weight;
+                    max_x = x;
+                }
+            }
+            edge_weight = min_weight + (int)(Math.random() * ((max_weight - min_weight) + 1));
+            if(edge_weight + x < max_width/step){
+                vertex_list.add(new Vertex(vertex_count+"", x + edge_weight, y));
+                temp_root.addEdge(vertex_count+"", edge_weight);
+                size += 1;
+                vertex_count -= 1;
+                if(vertex_count == 0){
+                    break;
+                }
+                temp_root = vertex_list.get(size-1);
+                x = x + edge_weight;
+            }
+            else{
+                temp_root = getVertex(max_x, max_y).get();
+                x = 0;
+                y = max_y;
+            }
+        }
+    }
 
     public MyGraph(String[] edge_list, String[] vertex_list) throws IOException{
         int edge_amount = edge_list.length;
@@ -47,6 +133,33 @@ public class MyGraph {
                 throw new IOException("Unable to create edge from " + data[0] + " to " + data[1]);
             }
         }
+    }
+
+    public Optional<Vertex> getVertex(int x, int y){
+        for(Vertex vertex : vertex_list){
+            if(vertex.getX() == x && vertex.getY() == y){
+                return Optional.ofNullable(vertex);
+            }
+        }
+
+        return Optional.ofNullable(null);
+    }
+
+    public boolean checkParamForRandomGer(int vertex_count, int edge_count, int max_weight){
+        max_weight *= step;
+        if(max_weight >= max_height || max_weight >= max_width){
+            return false;
+        }
+        double width_len = Math.ceil((double) max_width/(double) max_weight);
+        double height_len = Math.ceil((double) max_height/(double) max_weight);
+        if(width_len * height_len < vertex_count){
+            return false;
+        }
+
+        if(vertex_count*2 - 2 < edge_count){
+            return false;
+        }
+        return true;
     }
 
     public void resetGraph(){
@@ -156,10 +269,6 @@ public class MyGraph {
         }
 
         return false;
-    }
-
-    public boolean isVertexExist(int x, int y){
-        return graph_on_plot.get(y).get(x) != 0;
     }
 
     public int getSize() {
