@@ -82,7 +82,7 @@ public class MyGraphTest {
             defaultGraph.addVertex(name, x, y);
             actualCount = defaultGraph.getSize();
             assertEquals(expected, actualCount);
-            assertEquals(expectedVertex, defaultGraph.getVertex(name));
+            assertEquals(expectedVertex, defaultGraph.getVertex(name).get());
         }
         catch (IOException err){
             logger.error(err.getMessage());
@@ -169,7 +169,7 @@ public class MyGraphTest {
             defaultGraph.deleteVertex(name);
             actual_size = defaultGraph.getSize();
             assertEquals(expected_size, actual_size);
-            assertNull(defaultGraph.getVertex(name));
+            assertFalse(defaultGraph.getVertex(name).isPresent());
         }
         catch (IndexOutOfBoundsException err){
             logger.error(err.getMessage());
