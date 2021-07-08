@@ -21,7 +21,7 @@ public class MyGraphTest {
         try{
             defaultGraph = new MyGraph(edges, vertexes);
         }
-        catch (IOException err){
+        catch (IndexOutOfBoundsException err){
             logger.error(err.getMessage());
         }
     }
@@ -36,7 +36,7 @@ public class MyGraphTest {
             testGraph = new MyGraph(edges, vertexes);
             assertEquals(1,1);
         }
-        catch(IOException err){
+        catch(IndexOutOfBoundsException err){
             logger.error(err.getMessage());
             assertEquals(0,1);
         }
@@ -46,7 +46,7 @@ public class MyGraphTest {
             testGraph = new MyGraph(edges, vertexes);
             assertEquals(0,1);
         }
-        catch(IOException err){
+        catch(IndexOutOfBoundsException err){
             logger.error(err.getMessage());
             assertEquals(1,1);
         }
@@ -57,7 +57,7 @@ public class MyGraphTest {
             testGraph = new MyGraph(edges, vertexes);
             assertEquals(0,1);
         }
-        catch(IOException err){
+        catch(IndexOutOfBoundsException err){
             logger.error(err.getMessage());
             assertEquals(1,1);
         }

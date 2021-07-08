@@ -21,7 +21,7 @@ public class AWithStarTest {
         try{
             graph = new MyGraph(edges, vertexes);
         }
-        catch (IOException err){
+        catch (IndexOutOfBoundsException err){
             logger.error(err.getMessage());
         }
         graph.resetGraph();

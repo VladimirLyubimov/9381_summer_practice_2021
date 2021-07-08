@@ -9,8 +9,12 @@ public class AWithStar {
     public static ArrayList<String> doAlgo(MyGraph graph, String start_label, String finish_label) throws IndexOutOfBoundsException{
         ArrayList<Vertex> open_set = new ArrayList<>();
         ArrayList<Vertex> close_set = new ArrayList<>();
-        start_label = graph.getStart().get().getLabel();
-        finish_label = graph.getFinish().get().getLabel();
+        if(graph.getStart().isPresent()) {
+            start_label = graph.getStart().get().getLabel();
+        }
+        if(graph.getFinish().isPresent()) {
+            finish_label = graph.getFinish().get().getLabel();
+        }
 
         if(!graph.isVertexExist(start_label)){
             throw new IndexOutOfBoundsException("Start vertex with name " + start_label + " doesn't exist!");

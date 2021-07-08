@@ -113,7 +113,7 @@ public class MyGraph {
         }
     }
 
-    public MyGraph(String[] edge_list, String[] vertex_list) throws IOException{
+    public MyGraph(String[] edge_list, String[] vertex_list) throws IndexOutOfBoundsException{
         int edge_amount = edge_list.length;
         this.vertex_list = new ArrayList<>();
         size = 0;
@@ -134,7 +134,7 @@ public class MyGraph {
                 addEdge(data[0], data[1], Integer.parseInt(data[2]));
             }
             catch (IOException err){
-                throw new IOException("Unable to create edge from " + data[0] + " to " + data[1]);
+                throw new IndexOutOfBoundsException("Unable to create edge from " + data[0] + " to " + data[1]);
             }
         }
     }

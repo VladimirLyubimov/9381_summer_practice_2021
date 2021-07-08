@@ -14,7 +14,7 @@ public class Main {
         try{
             graph = new MyGraph(edges, vertexes);
         }
-        catch (IOException err){
+        catch (IndexOutOfBoundsException err){
             System.out.println("Error!");
             return;
         }
