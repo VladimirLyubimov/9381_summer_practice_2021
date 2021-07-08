@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.io.IOException;
+import java.util.Calendar;
 
 public class MyCanvas extends JComponent implements MouseListener{
     private MyGraph graph;
@@ -18,8 +19,9 @@ public class MyCanvas extends JComponent implements MouseListener{
     private int start_y = 0;
     private int finish_x = 0;
     private int finish_y = 0;
-    private int button = 1;
     private int append_click = 0;
+    private int delete_click = 0;
+    private long button_time = 0;
 
     public MyCanvas(MyGraph graph){
         addMouseListener(this);
@@ -28,52 +30,130 @@ public class MyCanvas extends JComponent implements MouseListener{
 
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
-        if(button == 1) {
-            int x = mouseEvent.getX() / step;
-            int y = mouseEvent.getY() / step;
-            if (graph.getVertex(x, y).isEmpty()) {
-                graph.addVertex(graph.getSize() + "", x, y);
-                repaint();
-            } else {
-                System.out.println("Already exists");
-            }
-        }
-        if(append_click == 2){
-            button = 1;
-            append_click = 0;
-        }
     }
 
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
-        if(button == 1) {
-            start_x = mouseEvent.getX()/step;
-            start_y = mouseEvent.getY()/step;
-        }
-        if(mouseEvent.getButton() == MouseEvent.BUTTON3){
-            button = 2;
+        if(mouseEvent.getButton() == 3) {
+            if(append_click == 0) {
+                start_x = mouseEvent.getX() / step;
+                start_y = mouseEvent.getY() / step;
+            }
             append_click += 1;
+        }
+
+        if(mouseEvent.getButton() == 2) {
+            if(delete_click == 0) {
+                start_x = mouseEvent.getX() / step;
+                start_y = mouseEvent.getY() / step;
+            }
+            delete_click += 1;
+        }
+
+        if(mouseEvent.getButton() == 1) {
+            button_time = System.currentTimeMillis();
+        }
+    }
+
+    private void addingVertex(MouseEvent mouseEvent) throws IndexOutOfBoundsException{
+        int x = mouseEvent.getX() / step;
+        int y = mouseEvent.getY() / step;
+        if (graph.getVertex(x, y).isEmpty()) {
+            graph.addVertex(graph.getSize() + "", x, y);
+            repaint();
+        } else {
+            throw new IndexOutOfBoundsException("Vertex already exist here!");
+        }
+    }
+
+    private void addingEdge(MouseEvent mouseEvent) throws IndexOutOfBoundsException{
+        append_click = 0;
+        finish_x = mouseEvent.getX()/step;
+        finish_y = mouseEvent.getY()/step;
+        Vertex start, finish;
+        if(graph.getVertex(start_x, start_y).isPresent() & graph.getVertex(finish_x, finish_y).isPresent() && (start_x != finish_x || start_y != finish_y)) {
+            start = graph.getVertex(start_x, start_y).get();
+            finish = graph.getVertex(finish_x, finish_y).get();
+            int weight = Math.abs(start.getX() - finish.getX()) + Math.abs(start.getY() - finish.getY());
+            try{
+                graph.addEdge(start.getLabel(), finish.getLabel(), weight);
+            }
+            catch (IOException err){
+                throw new IndexOutOfBoundsException(err.getMessage());
+            }
+            repaint();
+        }
+        else{
+            throw new IndexOutOfBoundsException("Fail");
+        }
+    }
+
+    private void deletingEdge(MouseEvent mouseEvent) throws IndexOutOfBoundsException{
+        delete_click = 0;
+        finish_x = mouseEvent.getX()/step;
+        finish_y = mouseEvent.getY()/step;
+        Vertex start, finish;
+        if(graph.getVertex(start_x, start_y).isPresent() & graph.getVertex(finish_x, finish_y).isPresent() && (start_x != finish_x || start_y != finish_y)) {
+            start = graph.getVertex(start_x, start_y).get();
+            finish = graph.getVertex(finish_x, finish_y).get();
+            try{
+                graph.deleteEdge(start.getLabel(), finish.getLabel());
+            }
+            catch (IndexOutOfBoundsException err){
+                throw new IndexOutOfBoundsException(err.getMessage());
+            }
+            repaint();
+        }
+        else{
+            throw new IndexOutOfBoundsException("Fail");
+        }
+    }
+
+    private void deletingVertex(MouseEvent mouseEvent) throws IndexOutOfBoundsException{
+        int x = mouseEvent.getX() / step;
+        int y = mouseEvent.getY() / step;
+        if (graph.getVertex(x, y).isPresent()) {
+            graph.deleteVertex(graph.getVertex(x, y).get().getLabel());
+            repaint();
+        } else {
+            throw new IndexOutOfBoundsException("Vertex already exist here!");
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
-        finish_x = mouseEvent.getX()/step;
-        finish_y = mouseEvent.getY()/step;
-        if(button == 2 && append_click == 2){
-            Vertex start, finish;
-            if(graph.getVertex(start_x, start_y).isPresent() & graph.getVertex(finish_x, finish_y).isPresent() && (start_x != finish_x || start_y != finish_y)) {
-                start = graph.getVertex(start_x, start_y).get();
-                finish = graph.getVertex(finish_x, finish_y).get();
-                int weight = Math.abs(start.getX() - finish.getX()) + Math.abs(start.getY() - finish.getY());
-                try{graph.addEdge(start.getLabel(), finish.getLabel(), weight);}
-                catch (IOException err){
-
+        if(mouseEvent.getButton() == 1){
+            button_time = System.currentTimeMillis() - button_time;
+            if(button_time > 1000){
+                try {
+                    deletingVertex(mouseEvent);
+                } catch (IndexOutOfBoundsException err) {
+                    System.out.println("Fail to delete vertex");
                 }
-                repaint();
             }
-            else{
-                System.out.println("Fail");
+            else {
+                try {
+                    addingVertex(mouseEvent);
+                } catch (IndexOutOfBoundsException err) {
+                    System.out.println("Already exist");
+                }
+            }
+        }
+        if(append_click == 2){
+            try{
+                addingEdge(mouseEvent);
+            }
+            catch (IndexOutOfBoundsException err){
+                System.out.println("Fail append edge");
+            }
+        }
+
+        if(delete_click == 2){
+            try{
+                deletingEdge(mouseEvent);
+            }
+            catch (IndexOutOfBoundsException err){
+                System.out.println("Fail delete edge");
             }
         }
     }
