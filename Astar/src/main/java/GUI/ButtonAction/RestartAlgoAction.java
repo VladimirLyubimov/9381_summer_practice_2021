@@ -14,6 +14,7 @@ public class RestartAlgoAction extends AbstractAction {
     }
     public void actionPerformed(ActionEvent event) {
         graph.resetGraph();
+        graph.resetStartFinish();
         System.out.println("Return to the start. Algorithm and graph returned to original state!");
     }
 }

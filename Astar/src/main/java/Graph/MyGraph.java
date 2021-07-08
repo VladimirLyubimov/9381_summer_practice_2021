@@ -8,6 +8,10 @@ public class MyGraph {
     private ArrayList<Vertex> vertex_list;
     private ArrayList<ArrayList<Integer>> graph_on_plot;
     private int size = 0;
+
+    private Vertex start;
+    private Vertex finish;
+
     private int max_width = 600;//canvas width
     private int max_height = 600;//canvas height
     private int step = 60;
@@ -170,6 +174,11 @@ public class MyGraph {
         }
     }
 
+    public void resetStartFinish(){
+        finish = null;
+        start = null;
+    }
+
     public void addVertex(String label, int x, int y) throws IndexOutOfBoundsException {
         if(isVertexExist(label)){
             throw new IndexOutOfBoundsException("Vertex with name " + label + " already exists!");
@@ -273,6 +282,32 @@ public class MyGraph {
 
     public int getSize() {
         return size;
+    }
+
+    public Optional<Vertex> getFinish() {
+        return Optional.ofNullable(finish);
+    }
+
+    public Optional<Vertex> getStart() {
+        return Optional.ofNullable(start);
+    }
+
+    public void setFinish(String label) {
+        if(isVertexExist(label)) {
+            finish = getVertex(label).get();
+        }
+        else{
+            finish = null;
+        }
+    }
+
+    public void setStart(String label) {
+        if(isVertexExist(label)) {
+            start = getVertex(label).get();
+        }
+        else{
+            start = null;
+        }
     }
 
     @Override

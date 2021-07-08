@@ -4,6 +4,8 @@ import Graph.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
@@ -12,6 +14,7 @@ import java.util.Calendar;
 
 public class MyCanvas extends JComponent implements MouseListener{
     private MyGraph graph;
+
     private int step = 60;
     private int shift = step/8;
     private int cshift = step/2 - 1;
@@ -54,6 +57,32 @@ public class MyCanvas extends JComponent implements MouseListener{
             button_time = System.currentTimeMillis();
         }
     }
+
+    /*private void getVertexName(String[] label){
+        JDialog panel = new JDialog();
+        panel.setSize(300, 150);
+        panel.setLayout(null);
+
+        JTextField text_box = new JTextField();
+        text_box.setBounds(50, 30, 200, 30);
+        panel.add(text_box);
+
+        Font font = new Font("Arial", Font.PLAIN, 12);
+        Insets inset = new Insets(0,0,0,0);
+        JButton button = new JButton("Create vertex");
+        button.setMargin(inset);
+        button.setFont(font);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                label[0] = text_box.getText();
+                panel.setVisible(false);
+            }
+        });
+        button.setBounds(50, 70, 200, 30);
+        panel.add(button);
+        panel.setVisible(true);
+    }*/
 
     private void addingVertex(MouseEvent mouseEvent) throws IndexOutOfBoundsException{
         int x = mouseEvent.getX() / step;
@@ -124,19 +153,32 @@ public class MyCanvas extends JComponent implements MouseListener{
     public void mouseReleased(MouseEvent mouseEvent) {
         if(mouseEvent.getButton() == 1){
             button_time = System.currentTimeMillis() - button_time;
-            if(button_time > 1000){
+            if(button_time > 7000){
                 try {
                     deletingVertex(mouseEvent);
                 } catch (IndexOutOfBoundsException err) {
                     System.out.println("Fail to delete vertex");
                 }
+                return;
             }
-            else {
-                try {
-                    addingVertex(mouseEvent);
-                } catch (IndexOutOfBoundsException err) {
-                    System.out.println("Already exist");
+            if(button_time > 2000) {
+                int x = mouseEvent.getX() / step;
+                int y = mouseEvent.getY() / step;
+                if(graph.getStart().isEmpty()){
+                    graph.setStart(graph.getVertex(x, y).get().getLabel());
+                    System.out.println("Start added");
                 }
+                else{
+                    graph.setFinish(graph.getVertex(x, y).get().getLabel());
+                    System.out.println("Finish added");
+                }
+                return;
+            }
+
+            try {
+                addingVertex(mouseEvent);
+            } catch (IndexOutOfBoundsException err) {
+                System.out.println("Already exist");
             }
         }
         if(append_click == 2){
