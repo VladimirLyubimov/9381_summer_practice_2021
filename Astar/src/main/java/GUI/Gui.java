@@ -7,6 +7,8 @@ import Graph.MyGraph;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 public class Gui {
     private JFrame window;
@@ -75,14 +77,29 @@ public class Gui {
         step_back.setBounds(610, 400, 200, 30);
         window.add(step_back);
 
-        go_end = new JButton(new FinishAlgoAction(this.graph, this.start, this.finish));
+        go_end = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                graph.resetGraph();
+                ArrayList<String> path = AWithStar.doAlgo(graph, start, finish);
+                graph_drawer.repaint();
+            }
+        });
         go_end.setText("Go to end");
         go_end.setFont(font);
         go_end.setMargin(inset);
         go_end.setBounds(860, 450, 200, 30);
         window.add(go_end);
 
-        go_start = new JButton(new RestartAlgoAction(this.graph));
+        go_start = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                graph.resetGraph();
+                graph.resetStartFinish();
+                System.out.println("Return to the start. Algorithm and graph returned to original state!");
+                graph_drawer.repaint();
+            }
+        });
         go_start.setText("Go to start");
         go_start.setFont(font);
         go_start.setMargin(inset);

@@ -6,6 +6,9 @@ import java.util.Optional;
 
 public class MyGraph {
     private ArrayList<Vertex> vertex_list;
+
+    private ArrayList<String> path = new ArrayList<>();
+
     private ArrayList<ArrayList<Integer>> graph_on_plot;
     private int size = 0;
 
@@ -172,6 +175,7 @@ public class MyGraph {
             vertex.setPathVal(1000000);
             vertex.setCameFrom("");
         }
+        path.clear();
     }
 
     public void resetStartFinish(){
@@ -308,6 +312,14 @@ public class MyGraph {
         else{
             start = null;
         }
+    }
+
+    public void setPath(ArrayList<String> path) {
+        this.path = path;
+    }
+
+    public ArrayList<String> getPath(){
+        return path;
     }
 
     @Override

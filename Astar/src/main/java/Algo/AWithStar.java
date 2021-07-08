@@ -22,6 +22,7 @@ public class AWithStar {
 
         ArrayList<String> path = checkNodes(graph, start_label, finish_label);
         if(!path.isEmpty()){
+            graph.setPath(path);
             return path;
         }
 
@@ -52,6 +53,7 @@ public class AWithStar {
 
             if(cur_vertex.getLabel().equals(finish_label)){
                 makePath(graph, finish_label, path);
+                graph.setPath(path);
                 return path;
             }
 
@@ -63,6 +65,7 @@ public class AWithStar {
 
         path = new ArrayList<String>();
         path.add("No path!");
+        graph.setPath(path);
         return path;
     }
 

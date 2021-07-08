@@ -4,13 +4,11 @@ import Graph.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.io.IOException;
-import java.util.Calendar;
+import java.util.ArrayList;
 
 public class MyCanvas extends JComponent implements MouseListener{
     private MyGraph graph;
@@ -178,7 +176,7 @@ public class MyCanvas extends JComponent implements MouseListener{
             try {
                 addingVertex(mouseEvent);
             } catch (IndexOutOfBoundsException err) {
-                System.out.println("Already exist");
+                System.out.println(err.getMessage());
             }
         }
         if(append_click == 2){
@@ -277,12 +275,31 @@ public class MyCanvas extends JComponent implements MouseListener{
         Color color = new Color(0,255,0);
         for(int i = 0; i < graph_size; i++){
             cur_ver = graph.getVertex(i);
-            Ellipse2D circle = new Ellipse2D.Double(cur_ver.getX()*step + shift, cur_ver.getY()*step + shift, 3*step/4, 3*step/4);
-            g2d.draw(circle);
-            g2d.setColor(color);
-            g2d.fill(circle);
+            drawVertex(cur_ver, color, old_color, g2d);
             g2d.setColor(old_color);
-            g2d.drawString(cur_ver.getLabel(), cur_ver.getX()*step + step/2 - cur_ver.getLabel().length()*4, cur_ver.getY()*step + 9*step/16);
         }
+
+        ArrayList<String> path = graph.getPath();
+        color = new Color(255,0,0);
+        if(path.size() > 1) {
+            for (String label : path) {
+                cur_ver = graph.getVertex(label).get();
+                drawVertex(cur_ver, color, old_color, g2d);
+            }
+        }
+        else{
+            if(!path.isEmpty()){
+                System.out.println(path.get(0));
+            }
+        }
+    }
+
+    private void drawVertex(Vertex cur_ver, Color color, Color old_color, Graphics2D g2d){
+        Ellipse2D circle = new Ellipse2D.Double(cur_ver.getX()*step + shift, cur_ver.getY()*step + shift, 3*step/4, 3*step/4);
+        g2d.draw(circle);
+        g2d.setColor(color);
+        g2d.fill(circle);
+        g2d.setColor(old_color);
+        g2d.drawString(cur_ver.getLabel(), cur_ver.getX()*step + step/2 - cur_ver.getLabel().length()*4, cur_ver.getY()*step + 9*step/16);
     }
 }

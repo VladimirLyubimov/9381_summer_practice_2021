@@ -1,6 +1,5 @@
 package Graph;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,32 +26,39 @@ public class MyGraphTest {
     }
 
     @Test
-    public void graphCreation(){
-        String[] edges = new String[] {"A B 2", "A C 2", "B D 4"};
-        String[] vertexes = new String[] {"A 0 0", "B 2 0" , "C 0 2", "D 2 4"};
+    public void graphCorrectCreation() {
+        String[] edges = new String[]{"A B 2", "A C 2", "B D 4"};
+        String[] vertexes = new String[]{"A 0 0", "B 2 0", "C 0 2", "D 2 4"};
         MyGraph testGraph;
 
-        try{
+        try {
             testGraph = new MyGraph(edges, vertexes);
-            assertEquals(1,1);
-        }
-        catch(IndexOutOfBoundsException err){
+            assertEquals(1, 1);
+        } catch (IndexOutOfBoundsException err) {
             logger.error(err.getMessage());
-            assertEquals(0,1);
+            assertEquals(0, 1);
         }
+    }
 
-        vertexes = new String[] {"A 0 0", "A 2 0" , "C 0 2", "D 2 4"};
-        try{
+    @Test
+    public void doubleVertexCreation() {
+        String[] edges = new String[]{"A B 2", "A C 2", "B D 4"};
+        String[] vertexes = new String[]{"A 0 0", "A 2 0", "C 0 2", "D 2 4"};
+        MyGraph testGraph;
+        try {
             testGraph = new MyGraph(edges, vertexes);
-            assertEquals(0,1);
-        }
-        catch(IndexOutOfBoundsException err){
+            assertEquals(0, 1);
+        } catch (IndexOutOfBoundsException err) {
             logger.error(err.getMessage());
-            assertEquals(1,1);
+            assertEquals(1, 1);
         }
+    }
 
-        vertexes = new String[] {"A 0 0", "B 2 0" , "C 0 2", "D 2 4"};
-        edges = new String[] {"A U 2", "A C 2", "B D 4"};
+    @Test
+    public void wrongEdgeCreation(){
+        String[] vertexes = new String[] {"A 0 0", "B 2 0" , "C 0 2", "D 2 4"};
+        String[] edges = new String[] {"A U 2", "A C 2", "B D 4"};
+        MyGraph testGraph;
         try{
             testGraph = new MyGraph(edges, vertexes);
             assertEquals(0,1);
