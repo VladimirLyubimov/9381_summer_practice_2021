@@ -1,6 +1,7 @@
 package GUI;
 
 import Algo.AWithStar;
+import GUI.AlgoVisual.AlgoVisualization;
 import GUI.ButtonAction.FinishAlgoAction;
 import GUI.ButtonAction.RestartAlgoAction;
 import Graph.MyGraph;
@@ -34,11 +35,16 @@ public class Gui {
     private JLabel max_weight_text;
 
     private MyGraph graph;
+    private final AlgoVisualization AVisual = new AlgoVisualization();
     private String start;
     private String finish;
 
-    public Gui(MyGraph graph, String start, String finish){
-        this.graph = graph;
+    public MyGraph getGraph(){
+        return graph;
+    }
+
+    public Gui(MyGraph gr, String start, String finish){
+        this.graph = gr;
         this.start =start;
         this.finish = finish;
         window = new JFrame("Practise project");
@@ -51,9 +57,22 @@ public class Gui {
 
         Font font = new Font("Arial", Font.PLAIN, 12);
         Insets inset = new Insets(0,0,0,0);
-        //Rectangle bounds = new Rectangle(610, 50, 200, 30);
 
-        random_grah = new JButton("Create random graph");
+        int[] graph_param = new int[4];
+        random_grah = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                graph_param[0] = Integer.parseInt(vertex_amount.getText());
+                graph_param[1] = Integer.parseInt(edge_amount.getText());
+                graph_param[2] = Integer.parseInt(min_weight.getText());
+                graph_param[3] = Integer.parseInt(max_weight.getText());
+                makeRandomGraph(graph_param);
+                graph_drawer.updateGraph(graph);
+                System.out.println(graph);
+                graph_drawer.repaint();
+            }
+        });
+        random_grah.setText("Create random graph");
         random_grah.setFont(font);
         random_grah.setMargin(inset);
         random_grah.setBounds(610, 300, 200, 30);
@@ -65,7 +84,25 @@ public class Gui {
         from_file.setBounds(860, 90, 200, 30);
         window.add(from_file);
 
-        step_forward = new JButton("Step forward");
+        step_forward = new JButton(new AbstractAction() {
+            private boolean is_prepare = false;
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if(!is_prepare){
+                    try {
+                        AVisual.prepare(graph);
+                        is_prepare = true;
+                    }
+                    catch (IndexOutOfBoundsException err){
+                        System.out.println("Unexceptable algorithm input data");
+                    }
+                }
+
+                AVisual.makeStep(graph);
+                graph_drawer.repaint();
+            }
+        });
+        step_forward.setText("Step forward");
         step_forward.setFont(font);
         step_forward.setMargin(inset);
         step_forward.setBounds(860, 400, 200, 30);
@@ -153,5 +190,9 @@ public class Gui {
 
         window.setVisible(true);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public void makeRandomGraph(int[] graph_param){
+        graph = new MyGraph(graph_param[0], graph_param[1], graph_param[2], graph_param[3]);
     }
 }

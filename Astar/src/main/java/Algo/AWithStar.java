@@ -7,8 +7,8 @@ import java.util.Collections;
 
 public class AWithStar {
     public static ArrayList<String> doAlgo(MyGraph graph, String start_label, String finish_label) throws IndexOutOfBoundsException{
-        ArrayList<Vertex> open_set = new ArrayList<>();
-        ArrayList<Vertex> close_set = new ArrayList<>();
+        ArrayList<Vertex> open_set = graph.getOpen_set();
+        ArrayList<Vertex> close_set = graph.getClose_set();
         if(graph.getStart().isPresent()) {
             start_label = graph.getStart().get().getLabel();
         }
@@ -38,19 +38,6 @@ public class AWithStar {
         while(!open_set.isEmpty()){
             Vertex cur_vertex = findMin(open_set);
 
-            System.out.println("Current vertex is: " + cur_vertex.getLabel());
-            System.out.print("Open set is: ");
-            for(Vertex vertex : open_set){
-                System.out.print(vertex.getLabel() + " ");
-            }
-            System.out.println();
-            System.out.print("Close set is: ");
-            for(Vertex vertex : close_set){
-                System.out.print(vertex.getLabel() + " ");
-            }
-            System.out.println("\n-------");
-
-
             if(cur_vertex.getLabel().equals(finish_label)){
                 makePath(graph, finish_label, path);
                 graph.setPath(path);
@@ -63,13 +50,13 @@ public class AWithStar {
             open_set.remove(cur_vertex);
         }
 
-        path = new ArrayList<String>();
+        path = new ArrayList<>();
         path.add("No path!");
         graph.setPath(path);
         return path;
     }
 
-    private static void openVertex(MyGraph graph, Vertex cur_vertex, ArrayList<Vertex> open_set, ArrayList<Vertex> close_set, int f_x, int f_y){
+   public static void openVertex(MyGraph graph, Vertex cur_vertex, ArrayList<Vertex> open_set, ArrayList<Vertex> close_set, int f_x, int f_y){
         int neighbour_amount = cur_vertex.getEdgeAmount();
         for(int i = 0; i < neighbour_amount; i++){
             Edge cur_edge = cur_vertex.getEdge(i);
@@ -100,7 +87,7 @@ public class AWithStar {
         }
     }
 
-    private static ArrayList<String> checkNodes(MyGraph graph, String start_label, String finish_label){
+   public static ArrayList<String> checkNodes(MyGraph graph, String start_label, String finish_label){
         ArrayList<String> path = new ArrayList<>();
         if(!graph.isVertexExist(finish_label)){
             path.add("No path! Finish vertex doesn't exist!");
@@ -115,7 +102,7 @@ public class AWithStar {
         return path;
     }
 
-    private static Vertex findMin(ArrayList<Vertex> open_set){
+   public static Vertex findMin(ArrayList<Vertex> open_set){
         Vertex res = open_set.get(0);
         for(Vertex vertex: open_set){
             if(res.getTotalVal() > vertex.getTotalVal()){
@@ -126,7 +113,8 @@ public class AWithStar {
         return res;
     }
 
-    private static void makePath(MyGraph graph, String finish, ArrayList<String> path){
+  public static void makePath(MyGraph graph, String finish, ArrayList<String> path){
+        path.clear();
         String prev = graph.getVertex(finish).get().getCameFrom();
         path.add(finish);
 

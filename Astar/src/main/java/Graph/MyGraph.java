@@ -6,6 +6,8 @@ import java.util.Optional;
 
 public class MyGraph {
     private ArrayList<Vertex> vertex_list;
+    private ArrayList<Vertex> open_set = new ArrayList<>();;
+    private ArrayList<Vertex> close_set = new ArrayList<>();;
 
     private ArrayList<String> path = new ArrayList<>();
 
@@ -14,6 +16,7 @@ public class MyGraph {
 
     private Vertex start;
     private Vertex finish;
+    private Vertex cur_vertex;
 
     private int max_width = 600;//canvas width
     private int max_height = 600;//canvas height
@@ -75,17 +78,19 @@ public class MyGraph {
         vertex_count -= 1;
         while(vertex_count > 0){
             int edge_weight = min_weight + (int)(Math.random() * ((max_weight - min_weight) + 1));
-            if(edge_weight + y < max_height/step){
-                if(x == 0){
+            if(edge_weight + y < max_height/step) {
+                if (x == 0) {
                     edge_weight = max_weight;
-                }
-                else{
-                    if(edge_weight != min_weight){
+                } else {
+                    if (edge_weight != min_weight) {
                         edge_weight -= 1;
                     }
                 }
-                vertex_list.add(new Vertex(vertex_count+"", x, y + edge_weight));
-                temp_root.addEdge(vertex_count+"", edge_weight);
+                vertex_list.add(new Vertex(vertex_count + "", x, y + edge_weight));
+                if (edge_count > 0){
+                    temp_root.addEdge(vertex_count + "", edge_weight);
+                    edge_count -= 1;
+                }
                 size += 1;
                 vertex_count -= 1;
                 if(vertex_count == 0){
@@ -99,7 +104,10 @@ public class MyGraph {
             edge_weight = min_weight + (int)(Math.random() * ((max_weight - min_weight) + 1));
             if(edge_weight + x < max_width/step){
                 vertex_list.add(new Vertex(vertex_count+"", x + edge_weight, y));
-                temp_root.addEdge(vertex_count+"", edge_weight);
+                if(edge_count > 0) {
+                    temp_root.addEdge(vertex_count + "", edge_weight);
+                    edge_count -= 1;
+                }
                 size += 1;
                 vertex_count -= 1;
                 if(vertex_count == 0){
@@ -112,6 +120,21 @@ public class MyGraph {
                 temp_root = getVertex(max_x, max_y).get();
                 x = 0;
                 y = max_y;
+            }
+        }
+
+        for(Vertex vertex : vertex_list) {
+            int count = vertex.getEdgeAmount();
+            for(int i = 0; i < count; i++){
+                Edge edge = vertex.getEdge(i);
+                Vertex n_vertex = getVertex(edge.getFinish()).get();
+                if(!n_vertex.isLinked(vertex)){
+                    n_vertex.addEdge(vertex.getLabel(), edge.getWeight());
+                    edge_count -= 1;
+                }
+                if(edge_count == 0){
+                    return;
+                }
             }
         }
     }
@@ -152,6 +175,14 @@ public class MyGraph {
         return Optional.ofNullable(null);
     }
 
+    public Optional<Vertex> getCurVertex(){
+        return Optional.ofNullable(cur_vertex);
+    }
+
+    public void setCurVertex(Vertex cur_vertex){
+        this.cur_vertex = cur_vertex;
+    }
+
     public boolean checkParamForRandomGer(int vertex_count, int edge_count, int max_weight){
         max_weight *= step;
         if(max_weight >= max_height || max_weight >= max_width){
@@ -175,6 +206,8 @@ public class MyGraph {
             vertex.setPathVal(1000000);
             vertex.setCameFrom("");
         }
+        open_set = new ArrayList<>();
+        close_set = new ArrayList<>();
         path.clear();
     }
 
@@ -294,6 +327,14 @@ public class MyGraph {
 
     public Optional<Vertex> getStart() {
         return Optional.ofNullable(start);
+    }
+
+    public ArrayList<Vertex> getClose_set() {
+        return close_set;
+    }
+
+    public ArrayList<Vertex> getOpen_set() {
+        return open_set;
     }
 
     public void setFinish(String label) {

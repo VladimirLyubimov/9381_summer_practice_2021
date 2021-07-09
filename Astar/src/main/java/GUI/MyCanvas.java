@@ -29,6 +29,10 @@ public class MyCanvas extends JComponent implements MouseListener{
         this.graph = graph;
     }
 
+    public void updateGraph(MyGraph graph){
+        this.graph = graph;
+    }
+
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
     }
@@ -56,37 +60,11 @@ public class MyCanvas extends JComponent implements MouseListener{
         }
     }
 
-    /*private void getVertexName(String[] label){
-        JDialog panel = new JDialog();
-        panel.setSize(300, 150);
-        panel.setLayout(null);
-
-        JTextField text_box = new JTextField();
-        text_box.setBounds(50, 30, 200, 30);
-        panel.add(text_box);
-
-        Font font = new Font("Arial", Font.PLAIN, 12);
-        Insets inset = new Insets(0,0,0,0);
-        JButton button = new JButton("Create vertex");
-        button.setMargin(inset);
-        button.setFont(font);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                label[0] = text_box.getText();
-                panel.setVisible(false);
-            }
-        });
-        button.setBounds(50, 70, 200, 30);
-        panel.add(button);
-        panel.setVisible(true);
-    }*/
-
     private void addingVertex(MouseEvent mouseEvent) throws IndexOutOfBoundsException{
         int x = mouseEvent.getX() / step;
         int y = mouseEvent.getY() / step;
         if (graph.getVertex(x, y).isEmpty()) {
-            graph.addVertex(graph.getSize() + "", x, y);
+            graph.addVertex(graph.getSize() + 2 + "", x, y);
             repaint();
         } else {
             throw new IndexOutOfBoundsException("Vertex already exist here!");
@@ -279,19 +257,39 @@ public class MyCanvas extends JComponent implements MouseListener{
             g2d.setColor(old_color);
         }
 
+        ArrayList<Vertex> vertex_set = graph.getOpen_set();
+        color = new Color(255,255,0);
+        for(Vertex vertex : vertex_set){
+            drawVertex(vertex, color, old_color, g2d);
+            g2d.setColor(old_color);
+        }
+
+        vertex_set = graph.getClose_set();
+        color = new Color(150,150,150);
+        for(Vertex vertex : vertex_set){
+            drawVertex(vertex, color, old_color, g2d);
+            g2d.setColor(old_color);
+        }
+
         ArrayList<String> path = graph.getPath();
         color = new Color(255,0,0);
-        if(path.size() > 1) {
-            for (String label : path) {
+        for (String label : path) {
+            if(graph.getVertex(label).isPresent()) {
                 cur_ver = graph.getVertex(label).get();
                 drawVertex(cur_ver, color, old_color, g2d);
             }
-        }
-        else{
-            if(!path.isEmpty()){
-                System.out.println(path.get(0));
+            else{
+                if(!path.isEmpty()){
+                    System.out.println(path.get(0));
+                }
             }
         }
+
+        if(graph.getCurVertex().isPresent()) {
+            color = new Color(0, 0, 255);
+            drawVertex(graph.getCurVertex().get(), color, old_color, g2d);
+        }
+
     }
 
     private void drawVertex(Vertex cur_ver, Color color, Color old_color, Graphics2D g2d){

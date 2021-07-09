@@ -81,6 +81,15 @@ public class Vertex {
         neighbours.remove(pos);
     }
 
+    public boolean isLinked(Vertex vertex){
+        for(Edge edge : neighbours){
+            if(edge.getFinish().equals(vertex.getLabel())){
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object obj){
         if(this == obj){
