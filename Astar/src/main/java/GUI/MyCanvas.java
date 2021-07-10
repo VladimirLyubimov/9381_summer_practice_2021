@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class MyCanvas extends JComponent implements MouseListener{
     private MyGraph graph;
 
-    private Logger logger = LogManager.getLogger();
+    private static Logger logger = LogManager.getLogger(GUI.MyCanvas.class);
 
     private int step = 60;
     private int shift = step/8;

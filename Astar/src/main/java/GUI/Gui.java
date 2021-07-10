@@ -48,7 +48,7 @@ public class Gui {
     private String finish;
     private boolean[] states = new boolean[] {false/*prepare algo*/, false/*finish reached*/};
 
-    private Logger logger = LogManager.getLogger();
+    private static Logger logger = LogManager.getLogger(GUI.Gui.class);
 
     public MyGraph getGraph(){
         return graph;
@@ -137,7 +137,7 @@ public class Gui {
                 }
             }
         });
-        random_grah.setText("Create unar graph");
+        random_grah.setText("Create unary graph");
         random_grah.setFont(font);
         random_grah.setMargin(inset);
         random_grah.setBounds(860, 300, 200, 30);

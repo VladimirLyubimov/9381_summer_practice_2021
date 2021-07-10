@@ -4,14 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import static org.junit.Assert.*;
 
 public class MyGraphTest {
     private MyGraph defaultGraph;
-    private Logger logger = LogManager.getLogger();
 
     @Before
     public void setUp() throws Exception{
@@ -21,7 +18,6 @@ public class MyGraphTest {
             defaultGraph = new MyGraph(edges, vertexes);
         }
         catch (IndexOutOfBoundsException err){
-            logger.error(err.getMessage());
         }
     }
 
@@ -159,7 +155,6 @@ public class MyGraphTest {
             Vertex start_vertex = defaultGraph.getVertex(start).get();
             assertEquals(expectedEdge, start_vertex.getEdge(start_vertex.getEdgeAmount() - 1));
         } catch (IOException err) {
-            logger.error(err.getMessage());
             assertEquals(1, 0);
         }
     }

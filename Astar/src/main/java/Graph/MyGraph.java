@@ -21,7 +21,7 @@ public class MyGraph {
     private Vertex finish;
     private Vertex cur_vertex;
 
-    private Logger logger = LogManager.getLogger();
+    private Logger logger = LogManager.getLogger(Graph.MyGraph.class);
 
     private int max_width = 600;//canvas width
     private int max_height = 600;//canvas height
