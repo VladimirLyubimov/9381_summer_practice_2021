@@ -378,10 +378,9 @@ public class MyGraph {
             if(vertex.getY() == y && x < vertex.getX() && dist > (vertex.getX()-x)){
                 dist = vertex.getX()-x;
                 cur_ver = vertex;
-                System.out.println(cur_vertex);
             }
         }
-        return Optional.ofNullable(cur_vertex);
+        return Optional.ofNullable(cur_ver);
     }
 
     public Optional<Vertex> checkLeft(int x, int y){
@@ -391,10 +390,9 @@ public class MyGraph {
             if(vertex.getY() == y && x > vertex.getX() && dist > (x-vertex.getX())){
                 dist = x-vertex.getX();
                 cur_ver = vertex;
-                System.out.println(cur_vertex);
             }
         }
-        return Optional.ofNullable(cur_vertex);
+        return Optional.ofNullable(cur_ver);
     }
 
     public Optional<Vertex> checkUp(int x, int y){
@@ -404,10 +402,9 @@ public class MyGraph {
             if(vertex.getX() == x && y > vertex.getY() && dist > (y-vertex.getY())){
                 dist = y-vertex.getY();
                 cur_ver = vertex;
-                System.out.println(cur_vertex);
             }
         }
-        return Optional.ofNullable(cur_vertex);
+        return Optional.ofNullable(cur_ver);
     }
 
     public Optional<Vertex> checkDown(int x, int y){
@@ -417,10 +414,9 @@ public class MyGraph {
             if(vertex.getX() == x && y < vertex.getY() && dist > (vertex.getY()-y)){
                 dist = vertex.getY()-y;
                 cur_ver = vertex;
-                System.out.println(cur_vertex);
             }
         }
-        return Optional.ofNullable(cur_vertex);
+        return Optional.ofNullable(cur_ver);
     }
 
     @Override
