@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class AWithStar {
-    public static ArrayList<String> doAlgo(MyGraph graph, String start_label, String finish_label) throws IndexOutOfBoundsException{
+    public static ArrayList<String> doAlgo(MyGraph graph) throws IndexOutOfBoundsException{
         ArrayList<Vertex> open_set = graph.getOpen_set();
         ArrayList<Vertex> close_set = graph.getClose_set();
+        String start_label = "";
+        String finish_label = "";
         if(graph.getStart().isPresent()) {
             start_label = graph.getStart().get().getLabel();
         }

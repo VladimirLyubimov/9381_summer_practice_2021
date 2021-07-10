@@ -227,10 +227,11 @@ public class MyGraph {
         if(isVertexExist(label)){
             throw new IndexOutOfBoundsException("Vertex with name " + label + " already exists!");
         }
-        else {
-            vertex_list.add(new Vertex(label, x, y));
-            size += 1;
+        if(getVertex(x, y).isPresent()){
+            throw new IndexOutOfBoundsException("Vertex at this place already exists!");
         }
+        vertex_list.add(new Vertex(label, x, y));
+        size += 1;
     }
 
     public void addEdge(String start_label, String finish_label, int weight) throws IOException{
@@ -368,6 +369,58 @@ public class MyGraph {
 
     public ArrayList<String> getPath(){
         return path;
+    }
+
+    public Optional<Vertex> checkRight(int x, int y){
+        int dist = 10000;
+        Vertex cur_ver = null;
+        for(Vertex vertex : vertex_list){
+            if(vertex.getY() == y && x < vertex.getX() && dist > (vertex.getX()-x)){
+                dist = vertex.getX()-x;
+                cur_ver = vertex;
+                System.out.println(cur_vertex);
+            }
+        }
+        return Optional.ofNullable(cur_vertex);
+    }
+
+    public Optional<Vertex> checkLeft(int x, int y){
+        int dist = 10000;
+        Vertex cur_ver = null;
+        for(Vertex vertex : vertex_list){
+            if(vertex.getY() == y && x > vertex.getX() && dist > (x-vertex.getX())){
+                dist = x-vertex.getX();
+                cur_ver = vertex;
+                System.out.println(cur_vertex);
+            }
+        }
+        return Optional.ofNullable(cur_vertex);
+    }
+
+    public Optional<Vertex> checkUp(int x, int y){
+        int dist = 10000;
+        Vertex cur_ver = null;
+        for(Vertex vertex : vertex_list){
+            if(vertex.getX() == x && y > vertex.getY() && dist > (y-vertex.getY())){
+                dist = y-vertex.getY();
+                cur_ver = vertex;
+                System.out.println(cur_vertex);
+            }
+        }
+        return Optional.ofNullable(cur_vertex);
+    }
+
+    public Optional<Vertex> checkDown(int x, int y){
+        int dist = 10000;
+        Vertex cur_ver = null;
+        for(Vertex vertex : vertex_list){
+            if(vertex.getX() == x && y < vertex.getY() && dist > (vertex.getY()-y)){
+                dist = vertex.getY()-y;
+                cur_ver = vertex;
+                System.out.println(cur_vertex);
+            }
+        }
+        return Optional.ofNullable(cur_vertex);
     }
 
     @Override

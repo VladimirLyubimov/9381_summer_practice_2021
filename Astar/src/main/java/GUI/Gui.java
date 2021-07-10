@@ -145,7 +145,7 @@ public class Gui {
             public void actionPerformed(ActionEvent actionEvent) {
                 graph.resetGraph();
                 try {
-                    ArrayList<String> path = AWithStar.doAlgo(graph, start, finish);
+                    ArrayList<String> path = AWithStar.doAlgo(graph);
                 }
                 catch (IndexOutOfBoundsException err){
                     logger.error(err.getMessage(), err);

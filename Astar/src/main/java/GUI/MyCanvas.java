@@ -68,6 +68,21 @@ public class MyCanvas extends JComponent implements MouseListener{
         int x = mouseEvent.getX() / step;
         int y = mouseEvent.getY() / step;
         if (graph.getVertex(x, y).isEmpty()) {
+            if(graph.checkRight(x, y).isPresent() && graph.checkLeft(x, y).isPresent()) {
+                Vertex l_neighb = graph.checkLeft(x, y).get();
+                Vertex r_neighb = graph.checkRight(x, y).get();
+                if (l_neighb.isLinked(r_neighb) || r_neighb.isLinked(l_neighb)) {
+                    throw new IndexOutOfBoundsException("Vertex can be place on edge!");
+                }
+            }
+            if (graph.checkUp(x, y).isPresent() && graph.checkDown(x, y).isPresent()) {
+                Vertex u_neighb = graph.checkUp(x, y).get();
+                Vertex d_neighb = graph.checkDown(x, y).get();
+                if (u_neighb.isLinked(d_neighb) || d_neighb.isLinked(u_neighb)) {
+                    throw new IndexOutOfBoundsException("Vertex can be place on edge!");
+                }
+            }
+
             graph.addVertex(graph.getSize() + 2 + "", x, y);
             repaint();
         } else {
@@ -80,9 +95,12 @@ public class MyCanvas extends JComponent implements MouseListener{
         finish_x = mouseEvent.getX()/step;
         finish_y = mouseEvent.getY()/step;
         Vertex start, finish;
-        if(graph.getVertex(start_x, start_y).isPresent() & graph.getVertex(finish_x, finish_y).isPresent() && (start_x != finish_x || start_y != finish_y)) {
+        if(graph.getVertex(start_x, start_y).isPresent() & graph.getVertex(finish_x, finish_y).isPresent() && !(start_x != finish_x && start_y != finish_y)) {
             start = graph.getVertex(start_x, start_y).get();
             finish = graph.getVertex(finish_x, finish_y).get();
+            if(start.isLinked(finish)){
+                throw new IndexOutOfBoundsException("Fail  to make edge");
+            }
             int weight = Math.abs(start.getX() - finish.getX()) + Math.abs(start.getY() - finish.getY());
             try{
                 graph.addEdge(start.getLabel(), finish.getLabel(), weight);
@@ -93,7 +111,7 @@ public class MyCanvas extends JComponent implements MouseListener{
             repaint();
         }
         else{
-            throw new IndexOutOfBoundsException("Fail");
+            throw new IndexOutOfBoundsException("Fail to make edge");
         }
     }
 
