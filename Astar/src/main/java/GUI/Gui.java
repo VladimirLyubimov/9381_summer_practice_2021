@@ -3,7 +3,6 @@ package GUI;
 import Algo.AWithStar;
 import GUI.AlgoVisual.AlgoVisualization;
 import Graph.MyGraph;
-import Graph.Vertex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,6 +41,7 @@ public class Gui {
     private final AlgoVisualization AVisual = new AlgoVisualization();
     private String start;
     private String finish;
+    private boolean[] states = new boolean[] {false/*prepare algo*/, false/*finish reached*/};
 
     private Logger logger = LogManager.getLogger();
 
@@ -121,22 +121,20 @@ public class Gui {
         //window.add(open_set_text);
 
         step_forward = new JButton(new AbstractAction() {
-            private boolean is_prepare = false;
-            private boolean is_finish = false;
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if(!is_prepare){
+                if(!states[0]){
                     try {
                         AVisual.prepare(graph);
-                        is_prepare = true;
+                        states[0] = true;
                     }
                     catch (IndexOutOfBoundsException err){
                         logger.error(err.getMessage(), err);
                         return;
                     }
                 }
-                if(!is_finish) {
-                    is_finish = AVisual.makeStep(graph);
+                if(!states[1]) {
+                    states[1] = AVisual.makeStep(graph);
                     /*StringBuilder st = new StringBuilder("Open set in order of adding is:\n");
                     for(Vertex vertex : graph.getOpen_set()){
                         st.append("Vertex name : ").append(vertex.getLabel()).append("; Path value : ").append(vertex.getPathVal()).append("; Total value : ").append(vertex.getTotalVal()).append("; Came from : ").append(vertex.getCameFrom()).append("\n");
@@ -165,7 +163,11 @@ public class Gui {
         go_end = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                states[0] = false;
+                states[1] = false;
                 graph.resetGraph();
+                states[0] = true;
+                states[1] = true;
                 try {
                     ArrayList<String> path = AWithStar.doAlgo(graph);
                 }
@@ -187,6 +189,8 @@ public class Gui {
             public void actionPerformed(ActionEvent actionEvent) {
                 graph.resetGraph();
                 graph.resetStartFinish();
+                states[0] = false;
+                states[1] = false;
                 System.out.println("Return to the start. Algorithm and graph returned to original state!");
                 graph_drawer.repaint();
             }
