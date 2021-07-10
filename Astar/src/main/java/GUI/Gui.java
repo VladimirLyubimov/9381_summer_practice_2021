@@ -2,13 +2,15 @@ package GUI;
 
 import Algo.AWithStar;
 import GUI.AlgoVisual.AlgoVisualization;
-import GUI.ButtonAction.FinishAlgoAction;
-import GUI.ButtonAction.RestartAlgoAction;
 import Graph.MyGraph;
+import Graph.Vertex;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Gui {
@@ -33,11 +35,14 @@ public class Gui {
     private JLabel edge_amount_text;
     private JLabel min_weight_text;
     private JLabel max_weight_text;
+    private JLabel open_set_text;
 
     private MyGraph graph;
     private final AlgoVisualization AVisual = new AlgoVisualization();
     private String start;
     private String finish;
+
+    private Logger logger = LogManager.getLogger();
 
     public MyGraph getGraph(){
         return graph;
@@ -66,26 +71,36 @@ public class Gui {
                 graph_param[1] = Integer.parseInt(edge_amount.getText());
                 graph_param[2] = Integer.parseInt(min_weight.getText());
                 graph_param[3] = Integer.parseInt(max_weight.getText());
-                makeRandomGraph(graph_param);
-                graph_drawer.updateGraph(graph);
-                System.out.println(graph);
-                graph_drawer.repaint();
+                try {
+                    makeRandomGraph(graph_param);
+                    graph_drawer.updateGraph(graph);
+                    System.out.println(graph);
+                    graph_drawer.repaint();
+                }
+                catch (IOException err){
+                    logger.error(err.getMessage(), err);
+                }
             }
         });
         random_grah.setText("Create random graph");
         random_grah.setFont(font);
         random_grah.setMargin(inset);
-        random_grah.setBounds(610, 300, 200, 30);
+        random_grah.setBounds(810, 300, 200, 30);
         window.add(random_grah);
 
         from_file = new JButton("Load graph from file");
         from_file.setFont(font);
         from_file.setMargin(inset);
-        from_file.setBounds(860, 90, 200, 30);
+        from_file.setBounds(1060, 90, 200, 30);
         window.add(from_file);
+
+        //open_set_text = new JLabel();
+        //open_set_text.setBounds(100, 610, 1000, 80);
+        //window.add(open_set_text);
 
         step_forward = new JButton(new AbstractAction() {
             private boolean is_prepare = false;
+            private boolean is_finish = false;
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if(!is_prepare){
@@ -94,38 +109,55 @@ public class Gui {
                         is_prepare = true;
                     }
                     catch (IndexOutOfBoundsException err){
-                        System.out.println("Unexceptable algorithm input data");
+                        logger.error(err.getMessage(), err);
+                        return;
                     }
                 }
-
-                AVisual.makeStep(graph);
-                graph_drawer.repaint();
+                if(!is_finish) {
+                    is_finish = AVisual.makeStep(graph);
+                    /*StringBuilder st = new StringBuilder("Open set in order of adding is:\n");
+                    for(Vertex vertex : graph.getOpen_set()){
+                        st.append("Vertex name : ").append(vertex.getLabel()).append("; Path value : ").append(vertex.getPathVal()).append("; Total value : ").append(vertex.getTotalVal()).append("; Came from : ").append(vertex.getCameFrom()).append("\n");
+                    }
+                    open_set_text.setText(new String(st));*/
+                    graph_drawer.repaint();
+                }
+                else{
+                    System.out.println("End reached! All I can has been done!");
+                }
             }
         });
         step_forward.setText("Step forward");
         step_forward.setFont(font);
         step_forward.setMargin(inset);
-        step_forward.setBounds(860, 400, 200, 30);
+        step_forward.setBounds(1060, 400, 200, 30);
         window.add(step_forward);
 
-        step_back = new JButton("Step back");
+        step_back = new JButton();
+        step_back.setText("Step back");
         step_back.setFont(font);
         step_back.setMargin(inset);
-        step_back.setBounds(610, 400, 200, 30);
+        step_back.setBounds(810, 400, 200, 30);
         window.add(step_back);
 
         go_end = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 graph.resetGraph();
-                ArrayList<String> path = AWithStar.doAlgo(graph, start, finish);
+                try {
+                    ArrayList<String> path = AWithStar.doAlgo(graph, start, finish);
+                }
+                catch (IndexOutOfBoundsException err){
+                    logger.error(err.getMessage(), err);
+                    return;
+                }
                 graph_drawer.repaint();
             }
         });
         go_end.setText("Go to end");
         go_end.setFont(font);
         go_end.setMargin(inset);
-        go_end.setBounds(860, 450, 200, 30);
+        go_end.setBounds(1060, 450, 200, 30);
         window.add(go_end);
 
         go_start = new JButton(new AbstractAction() {
@@ -140,59 +172,65 @@ public class Gui {
         go_start.setText("Go to start");
         go_start.setFont(font);
         go_start.setMargin(inset);
-        go_start.setBounds(610, 450, 200, 30);
+        go_start.setBounds(810, 450, 200, 30);
         window.add(go_start);
 
         filename = new JTextField();
         filename.setToolTipText("Input filename");
-        filename.setBounds(860, 50, 200, 30);
+        filename.setBounds(1060, 50, 200, 30);
         window.add(filename);
 
         vertex_amount = new JTextField();
         vertex_amount.setToolTipText("Input vertex amount");
-        vertex_amount.setBounds(610, 50, 200, 30);
+        vertex_amount.setBounds(810, 50, 200, 30);
         window.add(vertex_amount);
 
         edge_amount = new JTextField();
         edge_amount.setToolTipText("Input edge amount");
-        edge_amount.setBounds(610, 120, 200, 30);
+        edge_amount.setBounds(810, 120, 200, 30);
         window.add(edge_amount);
 
         min_weight = new JTextField();
         min_weight.setToolTipText("Input minimal edge weight");
-        min_weight.setBounds(610, 190, 200, 30);
+        min_weight.setBounds(810, 190, 200, 30);
         window.add(min_weight);
 
         max_weight = new JTextField();
         max_weight.setToolTipText("Input maximal edge weight");
-        max_weight.setBounds(610, 260, 200, 30);
+        max_weight.setBounds(810, 260, 200, 30);
         window.add(max_weight);
 
         filename_text = new JLabel("Input filename:");
-        filename_text.setBounds(860, 30, 200, 20);
+        filename_text.setBounds(1060, 30, 200, 20);
         window.add(filename_text);
 
         vertex_amount_text = new JLabel("Input vertex amount:");
-        vertex_amount_text.setBounds(610, 30, 200, 20);
+        vertex_amount_text.setBounds(810, 30, 200, 20);
         window.add(vertex_amount_text);
 
         filename_text = new JLabel("Input edge amount:");
-        filename_text.setBounds(610, 100, 200, 20);
+        filename_text.setBounds(810, 100, 200, 20);
         window.add(filename_text);
 
         filename_text = new JLabel("Input minimal edge weight:");
-        filename_text.setBounds(610, 170, 200, 20);
+        filename_text.setBounds(810, 170, 200, 20);
         window.add(filename_text);
 
         filename_text = new JLabel("Input maximal edge weight:");
-        filename_text.setBounds(610, 240, 200, 20);
+        filename_text.setBounds(810, 240, 200, 20);
         window.add(filename_text);
 
         window.setVisible(true);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public void makeRandomGraph(int[] graph_param){
-        graph = new MyGraph(graph_param[0], graph_param[1], graph_param[2], graph_param[3]);
+    public void makeRandomGraph(int[] graph_param) throws IOException {
+        try {
+            graph = new MyGraph(graph_param[0], graph_param[1], graph_param[2], graph_param[3]);
+        }
+        catch (IndexOutOfBoundsException err){
+            logger.error(err.getMessage(), err);
+            throw new IOException("Problem with random graph generation");
+        }
     }
 }

@@ -1,5 +1,8 @@
 package Graph;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -17,6 +20,8 @@ public class MyGraph {
     private Vertex start;
     private Vertex finish;
     private Vertex cur_vertex;
+
+    private Logger logger = LogManager.getLogger();
 
     private int max_width = 600;//canvas width
     private int max_height = 600;//canvas height
@@ -150,6 +155,7 @@ public class MyGraph {
                 addVertex(data[0], Integer.parseInt(data[1]), Integer.parseInt(data[2]));
             }
             catch(IndexOutOfBoundsException err){
+                logger.error(err.getMessage(), err);
                 throw new IndexOutOfBoundsException("Vertex with name " + data[0] + " already exists!");
             }
         }
@@ -160,6 +166,7 @@ public class MyGraph {
                 addEdge(data[0], data[1], Integer.parseInt(data[2]));
             }
             catch (IOException err){
+                logger.error(err.getMessage(), err);
                 throw new IndexOutOfBoundsException("Unable to create edge from " + data[0] + " to " + data[1]);
             }
         }

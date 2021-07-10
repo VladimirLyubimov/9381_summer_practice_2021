@@ -1,6 +1,8 @@
 package GUI;
 
 import Graph.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 
 public class MyCanvas extends JComponent implements MouseListener{
     private MyGraph graph;
+
+    private Logger logger = LogManager.getLogger();
 
     private int step = 60;
     private int shift = step/8;
@@ -105,6 +109,7 @@ public class MyCanvas extends JComponent implements MouseListener{
                 graph.deleteEdge(start.getLabel(), finish.getLabel());
             }
             catch (IndexOutOfBoundsException err){
+                logger.error(err.getMessage(), err);
                 throw new IndexOutOfBoundsException(err.getMessage());
             }
             repaint();
@@ -134,27 +139,31 @@ public class MyCanvas extends JComponent implements MouseListener{
                     deletingVertex(mouseEvent);
                 } catch (IndexOutOfBoundsException err) {
                     System.out.println("Fail to delete vertex");
+                    logger.error(err.getMessage(), err);
                 }
-                return;
             }
-            if(button_time > 2000) {
-                int x = mouseEvent.getX() / step;
-                int y = mouseEvent.getY() / step;
-                if(graph.getStart().isEmpty()){
-                    graph.setStart(graph.getVertex(x, y).get().getLabel());
-                    System.out.println("Start added");
+            else {
+                if (button_time > 2000) {
+                    int x = mouseEvent.getX() / step;
+                    int y = mouseEvent.getY() / step;
+                    if (graph.getStart().isEmpty()) {
+                        graph.setStart(graph.getVertex(x, y).get().getLabel());
+                        System.out.println("Start added");
+                    } else {
+                        graph.setFinish(graph.getVertex(x, y).get().getLabel());
+                        System.out.println("Finish added");
+                    }
+                    repaint();
                 }
-                else{
-                    graph.setFinish(graph.getVertex(x, y).get().getLabel());
-                    System.out.println("Finish added");
-                }
-                return;
-            }
+                else {
 
-            try {
-                addingVertex(mouseEvent);
-            } catch (IndexOutOfBoundsException err) {
-                System.out.println(err.getMessage());
+                    try {
+                        addingVertex(mouseEvent);
+                    } catch (IndexOutOfBoundsException err) {
+                        System.out.println(err.getMessage());
+                        logger.error(err.getMessage(), err);
+                    }
+                }
             }
         }
         if(append_click == 2){
@@ -163,6 +172,7 @@ public class MyCanvas extends JComponent implements MouseListener{
             }
             catch (IndexOutOfBoundsException err){
                 System.out.println("Fail append edge");
+                logger.error(err.getMessage(), err);
             }
         }
 
@@ -172,6 +182,7 @@ public class MyCanvas extends JComponent implements MouseListener{
             }
             catch (IndexOutOfBoundsException err){
                 System.out.println("Fail delete edge");
+                logger.error(err.getMessage(), err);
             }
         }
     }
@@ -283,6 +294,16 @@ public class MyCanvas extends JComponent implements MouseListener{
                     System.out.println(path.get(0));
                 }
             }
+        }
+
+        if(graph.getStart().isPresent()) {
+            color = new Color(0, 255, 255);
+            drawVertex(graph.getStart().get(), color, old_color, g2d);
+        }
+
+        if(graph.getFinish().isPresent()) {
+            color = new Color(255, 0, 255);
+            drawVertex(graph.getFinish().get(), color, old_color, g2d);
         }
 
         if(graph.getCurVertex().isPresent()) {

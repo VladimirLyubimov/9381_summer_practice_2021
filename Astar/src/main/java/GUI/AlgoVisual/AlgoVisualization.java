@@ -47,19 +47,16 @@ public class AlgoVisualization {
         graph.getVertex(start_label).get().setTotalVal(0);
     }
 
-    public void makeStep(MyGraph graph){
+    public boolean makeStep(MyGraph graph){
         if(!open_set.isEmpty()){
             Vertex cur_vertex = AWithStar.findMin(open_set);
             graph.setCurVertex(cur_vertex);
             AWithStar.makePath(graph, cur_vertex.getLabel(), path);
             graph.setPath(path);
-            /*for(String st : path)
-                System.out.print(st + ' ');
-            System.out.println();*/
 
             if(cur_vertex.getLabel().equals(finish_label)){
                 graph.setCurVertex(null);
-                return;
+                return true;
             }
 
             AWithStar.openVertex(graph, cur_vertex, open_set, close_set, f_x, f_y);
@@ -72,6 +69,8 @@ public class AlgoVisualization {
             path.add("No path!");
             graph.setPath(path);
             graph.setCurVertex(null);
+            return true;
         }
+        return false;
     }
 }
