@@ -55,7 +55,6 @@ public class AlgoVisualization {
             graph.setPath(path);
 
             if(cur_vertex.getLabel().equals(finish_label)){
-                graph.setCurVertex(null);
                 return true;
             }
 

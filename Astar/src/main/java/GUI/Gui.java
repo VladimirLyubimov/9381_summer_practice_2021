@@ -3,6 +3,7 @@ package GUI;
 import Algo.AWithStar;
 import GUI.AlgoVisual.AlgoVisualization;
 import Graph.MyGraph;
+import Graph.Vertex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -143,6 +144,8 @@ public class Gui {
                     graph_drawer.repaint();
                 }
                 else{
+                    graph.setCurVertex(null);
+                    graph_drawer.repaint();
                     System.out.println("End reached! All I can has been done!");
                 }
             }
@@ -153,7 +156,35 @@ public class Gui {
         step_forward.setBounds(860, 400, 200, 30);
         window.add(step_forward);
 
-        step_back = new JButton();
+        step_back = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                ArrayList<Vertex> close_set = graph.getClose_set();
+                ArrayList<Vertex> open_set = graph.getOpen_set();
+                ArrayList<Vertex> remove_set = new ArrayList<>();
+                if(!close_set.isEmpty()){
+                    Vertex cur_ver = close_set.get(close_set.size()-1);
+                    close_set.remove(cur_ver);
+                    for(Vertex vertex : open_set){
+                        if(cur_ver.isLinked(vertex)){
+                            remove_set.add(vertex);
+                        }
+                    }
+                    for(Vertex vertex : remove_set){
+                        vertex.resetVertex();
+                        open_set.remove(vertex);
+                    }
+                    open_set.add(cur_ver);
+                    graph.setCurVertex(cur_ver);
+                    AWithStar.makePath(graph, cur_ver.getLabel(), graph.getPath());
+                    graph.setPath(graph.getPath());
+                    graph_drawer.repaint();
+                }
+                else{
+                    System.out.println("You are in the start! I can't go in the past deeper!");
+                }
+            }
+        });
         step_back.setText("Step back");
         step_back.setFont(font);
         step_back.setMargin(inset);
@@ -166,6 +197,7 @@ public class Gui {
                 states[0] = false;
                 states[1] = false;
                 graph.resetGraph();
+                graph.setCurVertex(null);
                 states[0] = true;
                 states[1] = true;
                 try {
@@ -189,6 +221,7 @@ public class Gui {
             public void actionPerformed(ActionEvent actionEvent) {
                 graph.resetGraph();
                 graph.resetStartFinish();
+                graph.setCurVertex(null);
                 states[0] = false;
                 states[1] = false;
                 System.out.println("Return to the start. Algorithm and graph returned to original state!");

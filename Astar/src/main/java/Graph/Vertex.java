@@ -90,6 +90,12 @@ public class Vertex {
         return false;
     }
 
+    public void resetVertex(){
+        path_val = 1000000;
+        total_val = 1000000;
+        came_from = "";
+    }
+
     @Override
     public boolean equals(Object obj){
         if(this == obj){
