@@ -25,67 +25,54 @@ public class AWithStarTest {
             logger.error(err.getMessage());
         }
         graph.resetGraph();
+        graph.resetStartFinish();
     }
 
     @Test
-    public void doAlgo() {
-        String start = "A";
-        String finish = "K";
+    public void doAlgoPathExist() {
+        graph.setStart("A");
+        graph.setFinish("K");
         String expected_path = "[A, B, D, F, I, K]";
         String actual_path;
+        actual_path = AWithStar.doAlgo(graph).toString();
+        assertEquals(expected_path, actual_path);
+    }
 
-        try{
-            actual_path = AWithStar.doAlgo(graph).toString();
-            assertEquals(expected_path, actual_path);
-        }
-        catch (IndexOutOfBoundsException err){
-            logger.error(err.getMessage());
-            assertEquals(1,0);
-        }
+    @Test
+    public void doAlgoNoPath() {
+        graph.setStart("C");
+        graph.setFinish("A");
+        String expected_path = "[No path!]";
+        String actual_path = AWithStar.doAlgo(graph).toString();
+        assertEquals(expected_path, actual_path);
+    }
 
-        graph.resetGraph();
-        start = "C";
-        finish = "K";
-        expected_path = "[No path!]";
-        try{
-            actual_path = AWithStar.doAlgo(graph).toString();
-            assertEquals(expected_path, actual_path);
-        }
-        catch (IndexOutOfBoundsException err){
-            logger.error(err.getMessage());
-            assertEquals(1,0);
-        }
+    @Test
+    public void doAlgoSameStartFinish() {
+        graph.setStart("A");
+        graph.setFinish("A");
+        ;
+        String expected_path = "[Start and finish vertexes are same!]";
+        String actual_path = AWithStar.doAlgo(graph).toString();
+        assertEquals(expected_path, actual_path);
+    }
 
-        graph.resetGraph();
-        start = "K";
-        expected_path = "[Start and finish vertexes are same!]";
-        try{
-            actual_path = AWithStar.doAlgo(graph).toString();
-            assertEquals(expected_path, actual_path);
-        }
-        catch (IndexOutOfBoundsException err){
-            logger.error(err.getMessage());
-            assertEquals(1,0);
-        }
+    @Test
+    public void doAlgoNoFinish() {
+        graph.setStart("A");
+        graph.setFinish("Ms");
 
-        graph.resetGraph();
-        start = "A";
-        finish = "O";
-        expected_path = "[No path! Finish vertex doesn't exist!]";
-        try{
-            actual_path = AWithStar.doAlgo(graph).toString();
-            assertEquals(expected_path, actual_path);
-        }
-        catch (IndexOutOfBoundsException err){
-            logger.error(err.getMessage());
-            assertEquals(1,0);
-        }
+        String expected_path = "[No path! Finish vertex doesn't exist!]";
+        String actual_path = AWithStar.doAlgo(graph).toString();
+        assertEquals(expected_path, actual_path);
+    }
 
-        graph.resetGraph();
-        start = "U";
-        finish = "K";
+    @Test
+    public void doAlgoNoStart() {
+        graph.setStart("U");
+        graph.setFinish("K");
         try{
-            actual_path = AWithStar.doAlgo(graph).toString();
+            String actual_path = AWithStar.doAlgo(graph).toString();
             assertEquals(1,0);
         }
         catch (IndexOutOfBoundsException err){

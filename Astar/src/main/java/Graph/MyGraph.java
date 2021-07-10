@@ -248,6 +248,10 @@ public class MyGraph {
             throw new IOException("Wrong weight!");
         }
 
+        if(getVertex(start_label).get().isLinked(getVertex(finish_label).get())){
+            throw new IOException("Edge already exist!");
+        }
+
         getVertex(start_label).get().addEdge(finish_label, weight);
     }
 
