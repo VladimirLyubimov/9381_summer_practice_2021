@@ -10,8 +10,11 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.swing.Timer;
 
 public class Gui {
     private JFrame window;
@@ -37,6 +40,7 @@ public class Gui {
     private JLabel min_weight_text;
     private JLabel max_weight_text;
     private JLabel open_set_text;
+    private JLabel time_text;
 
     private MyGraph graph;
     private final AlgoVisualization AVisual = new AlgoVisualization();
@@ -65,14 +69,34 @@ public class Gui {
         Font font = new Font("Arial", Font.PLAIN, 12);
         Insets inset = new Insets(0,0,0,0);
 
+
+        time_text = new JLabel("00:00:00");
+        time_text.setBounds(610, 10, 200, 10);
+        window.add(time_text);
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+                time_text.setText(format.format(new java.util.Date()));
+            }
+        });
+        timer.start();
+
         int[] graph_param = new int[4];
         random_grah = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                graph_param[0] = Integer.parseInt(vertex_amount.getText());
-                graph_param[1] = Integer.parseInt(edge_amount.getText());
-                graph_param[2] = Integer.parseInt(min_weight.getText());
-                graph_param[3] = Integer.parseInt(max_weight.getText());
+                try {
+                    graph_param[0] = Integer.parseInt(vertex_amount.getText());
+                    graph_param[1] = Integer.parseInt(edge_amount.getText());
+                    graph_param[2] = Integer.parseInt(min_weight.getText());
+                    graph_param[3] = Integer.parseInt(max_weight.getText());
+                }
+                catch (NumberFormatException err){
+                    logger.error(err.getMessage(), err);
+                    System.out.println("Invalid data! Try Again!");
+                    return;
+                }
                 try {
                     makeRandomGraph(graph_param);
                     graph_drawer.updateGraph(graph);
@@ -93,7 +117,15 @@ public class Gui {
         random_grah = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                int vertex_count = Integer.parseInt(vertex_amount.getText());
+                int vertex_count = 0;
+                try {
+                    vertex_count = Integer.parseInt(vertex_amount.getText());
+                }
+                catch (NumberFormatException err){
+                    logger.error(err.getMessage(), err);
+                    System.out.println("Invalid data! Try Again!");
+                    return;
+                }
                 try {
                     makeUnarGraph(vertex_count);
                     graph_drawer.updateGraph(graph);
