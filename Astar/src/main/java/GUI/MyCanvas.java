@@ -17,9 +17,14 @@ public class MyCanvas extends JComponent implements MouseListener{
 
     private static Logger logger = LogManager.getLogger(GUI.MyCanvas.class);
 
+    private static JFrame mes_window = null;
+    private static JLabel message = new JLabel("Nothing happened");
+
     private int step = 60;
     private int shift = step/8;
     private int cshift = step/2 - 1;
+    private int mouse_x = -1;
+    private int mouse_y = -1;
     private int start_x = 0;
     private int start_y = 0;
     private int finish_x = 0;
@@ -43,6 +48,15 @@ public class MyCanvas extends JComponent implements MouseListener{
 
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
+        message.setText("");
+        if(mes_window != null) {
+            mes_window.dispose();
+        }
+
+        mouse_x = mouseEvent.getX() / step;
+        mouse_y = mouseEvent.getY() / step;
+        repaint();
+
         if(mouseEvent.getButton() == 3) {
             if(append_click == 0) {
                 start_x = mouseEvent.getX() / step;
@@ -150,13 +164,25 @@ public class MyCanvas extends JComponent implements MouseListener{
 
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
+        mouse_x = -1;
+
+        mes_window = new JFrame("Message for user");
+        mes_window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        mes_window.setSize(320, 140);
+        mes_window.setLayout(null);
+        mes_window.setVisible(true);
+        mes_window.add(message);
+
+        message.setBounds(10,10,300, 120);
+
         if(mouseEvent.getButton() == 1){
             button_time = System.currentTimeMillis() - button_time;
             if(button_time > 7000){
                 try {
                     deletingVertex(mouseEvent);
+                    message.setText("You delete vertex!");
                 } catch (IndexOutOfBoundsException err) {
-                    System.out.println("Fail to delete vertex");
+                    message.setText("Fail to delete vertex");
                     logger.error(err.getMessage(), err);
                 }
             }
@@ -220,6 +246,19 @@ public class MyCanvas extends JComponent implements MouseListener{
         Graphics2D g2d = (Graphics2D) graphics;
         drawEdges(graph, g2d);
         drawVertexes(graph, g2d);
+        drawMouseTouch(mouse_x, mouse_y, g2d);
+    }
+
+    private void drawMouseTouch(int x, int y, Graphics2D g2d){
+        if(x == -1){
+            return;
+        }
+        x = x*step;
+        y = y*step;
+        Color old_color = g2d.getColor();
+        g2d.setColor(new Color(255,0,0, 80));
+        g2d.fill(new Rectangle(x,y,step, step));
+        g2d.setColor(old_color);
     }
 
     private void drawEdges(MyGraph graph, Graphics2D g2d){

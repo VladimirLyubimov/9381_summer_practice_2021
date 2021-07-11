@@ -39,7 +39,7 @@ public class Gui {
     private JLabel edge_amount_text;
     private JLabel min_weight_text;
     private JLabel max_weight_text;
-    private JLabel open_set_text;
+    private JLabel status_text;
     private JLabel time_text;
 
     private MyGraph graph;
@@ -59,11 +59,12 @@ public class Gui {
         this.start =start;
         this.finish = finish;
         window = new JFrame("Practise project");
-        window.setSize(1200, 650);
+        window.setSize(1200, 680);
         window.setLayout(null);
 
         graph_drawer = new MyCanvas(this.graph);
-        graph_drawer.setBounds(0,0, 600, 600);
+        graph_drawer.setBounds(0,0, 600, 540);
+        graph_drawer.setBorder(BorderFactory.createEtchedBorder());
         window.add(graph_drawer);
 
         Font font = new Font("Arial", Font.PLAIN, 12);
@@ -82,6 +83,12 @@ public class Gui {
         });
         timer.start();
 
+        status_text = new JLabel();
+        status_text.setBounds(100, 550, 1000, 120);
+        status_text.setText("Messages for user:");
+        status_text.setBorder(BorderFactory.createEtchedBorder());
+        window.add(status_text);
+
         int[] graph_param = new int[4];
         random_grah = new JButton(new AbstractAction() {
             @Override
@@ -94,7 +101,7 @@ public class Gui {
                 }
                 catch (NumberFormatException err){
                     logger.error(err.getMessage(), err);
-                    System.out.println("Invalid data! Try Again!");
+                    status_text.setText("<html>Messages for user:<br>- Wrong number format! Please input integer decimal numbers!</html>");
                     return;
                 }
                 try {
@@ -102,9 +109,11 @@ public class Gui {
                     graph_drawer.updateGraph(graph);
                     System.out.println(graph);
                     graph_drawer.repaint();
+                    status_text.setText("<html>Messages for user:<br>- You successfully build new random graph</html>");
                 }
                 catch (IOException err){
                     logger.error(err.getMessage(), err);
+                    status_text.setText("<html>Messages for user:<br>- Wrong input data for random generation!<br>- Remember:<br>all numbers must be non-negative;<br>max amount of vertexes is " + (int)(Math.ceil((double)10/(double)graph_param[3])*Math.ceil((double)9/(double)graph_param[3])) + " and you have " + graph_param[0] + ";<br>max amount of edges is "+ (2*graph_param[0]-2) + " and you have " + graph_param[1] + ";<br>maximal edge weight must be less than 10 and you have " + graph_param[3] + ";<br>for make graph with only unary edge use another button</html>");
                 }
             }
         });
@@ -123,7 +132,7 @@ public class Gui {
                 }
                 catch (NumberFormatException err){
                     logger.error(err.getMessage(), err);
-                    System.out.println("Invalid data! Try Again!");
+                    status_text.setText("<html>Messages for user:<br>- Wrong number format! Please input integer decimal numbers!</html>");
                     return;
                 }
                 try {
@@ -131,8 +140,10 @@ public class Gui {
                     graph_drawer.updateGraph(graph);
                     System.out.println(graph);
                     graph_drawer.repaint();
+                    status_text.setText("<html>Messages for user:<br>- You successfully build new unary graph</html>");
                 }
                 catch (IOException err){
+                    status_text.setText("<html>Messages for user:<br>- Wrong input data for unary graph generation!<br>- Remember:<br>all numbers must be non-negative;<br>max amount of vertexes is " + (int)(Math.ceil((double)10/(double)graph_param[3])*Math.ceil((double)9/(double)graph_param[3])) + " and you have " + graph_param[0] + "/html");
                     logger.error(err.getMessage(), err);
                 }
             }
@@ -149,10 +160,6 @@ public class Gui {
         from_file.setBounds(860, 90, 200, 30);
         window.add(from_file);
 
-        //open_set_text = new JLabel();
-        //open_set_text.setBounds(100, 610, 1000, 80);
-        //window.add(open_set_text);
-
         step_forward = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -162,6 +169,7 @@ public class Gui {
                         states[0] = true;
                     }
                     catch (IndexOutOfBoundsException err){
+                        status_text.setText("<html>Messages for user:<br>- Wrong parameters for A* algorithm! Check that:<br>You set start and finish vertexes;<br>Start and finish vertexes are different vertexes;<br>Use 'Reset algorithm' button to reset algorithm data</html>");
                         logger.error(err.getMessage(), err);
                         return;
                     }
@@ -174,11 +182,12 @@ public class Gui {
                     }
                     open_set_text.setText(new String(st));*/
                     graph_drawer.repaint();
+                    status_text.setText("<html>Messages for user:<br>- You make an algorithm step</html>");
                 }
                 else{
                     graph.setCurVertex(null);
                     graph_drawer.repaint();
-                    System.out.println("End reached! All I can has been done!");
+                    status_text.setText("<html>Messages for user:<br>- End of algorithm reached. Result is:<br>"+ graph.getPath().toString() +"</html>");
                 }
             }
         });
@@ -207,13 +216,17 @@ public class Gui {
                         open_set.remove(vertex);
                     }
                     open_set.add(cur_ver);
+                    if(!(close_set.size() == 0)){
+                        cur_ver = close_set.get(close_set.size() - 1);
+                    }
                     graph.setCurVertex(cur_ver);
                     AWithStar.makePath(graph, cur_ver.getLabel(), graph.getPath());
                     graph.setPath(graph.getPath());
                     graph_drawer.repaint();
+                    status_text.setText("<html>Messages for user:<br>- You make a step back</html>");
                 }
                 else{
-                    System.out.println("You are in the start! I can't go in the past deeper!");
+                    status_text.setText("<html>Messages for user:<br>- You are in the start! No more steps back can be made!</html>");
                 }
             }
         });
@@ -236,10 +249,12 @@ public class Gui {
                     ArrayList<String> path = AWithStar.doAlgo(graph);
                 }
                 catch (IndexOutOfBoundsException err){
+                    status_text.setText("<html>Messages for user:<br>- Wrong parameters for A* algorithm! Check that:<br>You set start and finish vertexes;<br>Start and finish vertexes are different vertexes;<br>Use 'Reset algorithm' button to reset algorithm data</html>");
                     logger.error(err.getMessage(), err);
                     return;
                 }
                 graph_drawer.repaint();
+                status_text.setText("<html>Messages for user:<br>- End of algorithm reached. Result is:<br>"+ graph.getPath().toString() +"</html>");
             }
         });
         go_end.setText("Go to end");
@@ -256,11 +271,11 @@ public class Gui {
                 graph.setCurVertex(null);
                 states[0] = false;
                 states[1] = false;
-                System.out.println("Return to the start. Algorithm and graph returned to original state!");
+                status_text.setText("<html>Messages for user:<br>Algorithm and graph returned to original state! Start and finish are reset!</html>");
                 graph_drawer.repaint();
             }
         });
-        go_start.setText("Go to start");
+        go_start.setText("Reset algorithm");
         go_start.setFont(font);
         go_start.setMargin(inset);
         go_start.setBounds(610, 450, 200, 30);

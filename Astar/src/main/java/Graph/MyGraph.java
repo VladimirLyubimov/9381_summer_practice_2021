@@ -24,7 +24,7 @@ public class MyGraph {
     private Logger logger = LogManager.getLogger(Graph.MyGraph.class);
 
     private int max_width = 600;//canvas width
-    private int max_height = 600;//canvas height
+    private int max_height = 540;//canvas height
     private int step = 60;
 
     public MyGraph(){
@@ -68,7 +68,7 @@ public class MyGraph {
     }
 
     public MyGraph(int vertex_count, int edge_count, int min_weight, int max_weight) throws IndexOutOfBoundsException{
-        if(!checkParamForRandomGer(vertex_count, edge_count, max_weight)){
+        if(!checkParamForRandomGer(vertex_count, edge_count, max_weight) || min_weight <= 0){
             throw new IndexOutOfBoundsException("Invalid input data!");
         }
         vertex_list = new ArrayList<>();
