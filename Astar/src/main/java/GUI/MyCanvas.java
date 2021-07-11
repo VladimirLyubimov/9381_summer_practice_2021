@@ -36,6 +36,8 @@ public class MyCanvas extends JComponent implements MouseListener{
     public MyCanvas(MyGraph graph){
         addMouseListener(this);
         this.graph = graph;
+        message.setHorizontalAlignment(SwingConstants.CENTER);
+        message.setVerticalAlignment(SwingConstants.CENTER);
     }
 
     public void updateGraph(MyGraph graph){
@@ -61,6 +63,7 @@ public class MyCanvas extends JComponent implements MouseListener{
             if(append_click == 0) {
                 start_x = mouseEvent.getX() / step;
                 start_y = mouseEvent.getY() / step;
+                message.setText("Start for new edge added!");
             }
             append_click += 1;
         }
@@ -69,6 +72,7 @@ public class MyCanvas extends JComponent implements MouseListener{
             if(delete_click == 0) {
                 start_x = mouseEvent.getX() / step;
                 start_y = mouseEvent.getY() / step;
+                message.setText("Start of edge for deleting added!");
             }
             delete_click += 1;
         }
@@ -98,7 +102,7 @@ public class MyCanvas extends JComponent implements MouseListener{
             }
 
             graph.addVertex(graph.getSize() + 2 + "", x, y);
-            repaint();
+            //repaint();
         } else {
             throw new IndexOutOfBoundsException("Vertex already exist here!");
         }
@@ -122,7 +126,7 @@ public class MyCanvas extends JComponent implements MouseListener{
             catch (IOException err){
                 throw new IndexOutOfBoundsException(err.getMessage());
             }
-            repaint();
+            //repaint();
         }
         else{
             throw new IndexOutOfBoundsException("Fail to make edge");
@@ -144,7 +148,7 @@ public class MyCanvas extends JComponent implements MouseListener{
                 logger.error(err.getMessage(), err);
                 throw new IndexOutOfBoundsException(err.getMessage());
             }
-            repaint();
+            //repaint();
         }
         else{
             throw new IndexOutOfBoundsException("Fail");
@@ -156,7 +160,7 @@ public class MyCanvas extends JComponent implements MouseListener{
         int y = mouseEvent.getY() / step;
         if (graph.getVertex(x, y).isPresent()) {
             graph.deleteVertex(graph.getVertex(x, y).get().getLabel());
-            repaint();
+            //repaint();
         } else {
             throw new IndexOutOfBoundsException("Vertex already exist here!");
         }
@@ -168,7 +172,7 @@ public class MyCanvas extends JComponent implements MouseListener{
 
         mes_window = new JFrame("Message for user");
         mes_window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        mes_window.setSize(320, 140);
+        mes_window.setSize(320, 200);
         mes_window.setLayout(null);
         mes_window.setVisible(true);
         mes_window.add(message);
@@ -182,7 +186,7 @@ public class MyCanvas extends JComponent implements MouseListener{
                     deletingVertex(mouseEvent);
                     message.setText("You delete vertex!");
                 } catch (IndexOutOfBoundsException err) {
-                    message.setText("Fail to delete vertex");
+                    message.setText("<html>Fail to delete vertex!<br>Causes:<br>-This vertex doesn't exist</html>");
                     logger.error(err.getMessage(), err);
                 }
             }
@@ -192,19 +196,19 @@ public class MyCanvas extends JComponent implements MouseListener{
                     int y = mouseEvent.getY() / step;
                     if (graph.getStart().isEmpty()) {
                         graph.setStart(graph.getVertex(x, y).get().getLabel());
-                        System.out.println("Start added");
+                        message.setText("Start added!");
                     } else {
                         graph.setFinish(graph.getVertex(x, y).get().getLabel());
-                        System.out.println("Finish added");
+                        message.setText("Finish added!");
                     }
-                    repaint();
                 }
                 else {
 
                     try {
                         addingVertex(mouseEvent);
+                        message.setText("Vertex added!");
                     } catch (IndexOutOfBoundsException err) {
-                        System.out.println(err.getMessage());
+                        message.setText(err.getMessage());
                         logger.error(err.getMessage(), err);
                     }
                 }
@@ -213,9 +217,10 @@ public class MyCanvas extends JComponent implements MouseListener{
         if(append_click == 2){
             try{
                 addingEdge(mouseEvent);
+                message.setText("Edge added!");
             }
             catch (IndexOutOfBoundsException err){
-                System.out.println("Fail append edge");
+                message.setText("<html>Fail to append edge!<br>Causes:<br>-It can already existed<br>-You tried to make diagonal edge</html>");
                 logger.error(err.getMessage(), err);
             }
         }
@@ -223,12 +228,14 @@ public class MyCanvas extends JComponent implements MouseListener{
         if(delete_click == 2){
             try{
                 deletingEdge(mouseEvent);
+                message.setText("Edge deleted!");
             }
             catch (IndexOutOfBoundsException err){
-                System.out.println("Fail delete edge");
+                message.setText("<html>Fail to delete edge!<br>Causes:<br>-Edge doesn't exist</html>");
                 logger.error(err.getMessage(), err);
             }
         }
+        repaint();
     }
 
     @Override
