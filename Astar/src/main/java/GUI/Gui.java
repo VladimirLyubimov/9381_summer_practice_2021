@@ -123,9 +123,13 @@ public class Gui {
                     graph_drawer.repaint();
                     status_text.setText("<html>Messages for user:<br>- You successfully build new random graph</html>");
                 }
-                catch (IOException err){
+                catch (IOException err) {
                     logger.error(err.getMessage(), err);
-                    status_text.setText("<html>Messages for user:<br>- Wrong input data for random generation!<br>- Remember:<br>all numbers must be non-negative;<br>max amount of vertexes is " + (int)(Math.ceil((double)10/(double)graph_param[3])*Math.ceil((double)9/(double)graph_param[3])) + " and you have " + graph_param[0] + ";<br>max amount of edges is "+ (2*graph_param[0]-2) + " and you have " + graph_param[1] + ";<br>maximal edge weight must be less than 9, more than 1 and not less than minimal weight, which is " + graph_param[2] + ", and you have max weight " + graph_param[3] + ";<br>for make graph with only unary edges use another button 'Create unary graph'</html>");
+                    if (graph_param[3] == 0 || graph_param[2] == 0) {
+                        status_text.setText("<html>Messages for user:<br>- Minimal or maximal edge weight is zero. </html>");
+                    } else {
+                        status_text.setText("<html>Messages for user:<br>- Wrong input data for random generation!<br>- Remember:<br>all numbers must be non-negative;<br>max amount of vertexes is " + (int) (Math.ceil((double) 10 / (double) graph_param[3]) * Math.ceil((double) 9 / (double) graph_param[3])) + " and you have " + graph_param[0] + ";<br>max amount of edges is " + (2 * graph_param[0] - 2) + " and you have " + graph_param[1] + ";<br>maximal edge weight must be less than 9, more than 1 and not less than minimal weight, which is " + graph_param[2] + ", and you have max weight " + graph_param[3] + ";<br>for make graph with only unary edges use another button 'Create unary graph'</html>");
+                    }
                 }
             }
         });

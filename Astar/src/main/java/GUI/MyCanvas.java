@@ -239,7 +239,7 @@ public class MyCanvas extends JComponent implements MouseListener {
                 message.setText("Edge added!");
             }
             catch (IndexOutOfBoundsException err){
-                message.setText("<html>Fail to append edge!<br>Causes:<br>-It can already existed<br>-You tried to make diagonal edge</html>");
+                message.setText("<html>Fail to append edge!<br>Causes:<br>-It can already existed<br>-You tried to make diagonal edge<br>-Start or finish vertexes of your edge don't exist</html>");
                 logger.error(err.getMessage(), err);
             }
         }
