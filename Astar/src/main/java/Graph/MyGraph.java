@@ -1,5 +1,7 @@
 package Graph;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -108,6 +110,12 @@ public class MyGraph {
             }
             edge_weight = min_weight + (int)(Math.random() * ((max_weight - min_weight) + 1));
             if(edge_weight + x < max_width/step){
+                if(getVertex(x + edge_weight, y).isPresent()){
+                    temp_root = getVertex(max_x, max_y).get();
+                    x = 0;
+                    y = max_y;
+                    continue;
+                }
                 vertex_list.add(new Vertex(vertex_count+"", x + edge_weight, y));
                 if(edge_count > 0) {
                     temp_root.addEdge(vertex_count + "", edge_weight);
@@ -128,17 +136,19 @@ public class MyGraph {
             }
         }
 
-        for(Vertex vertex : vertex_list) {
-            int count = vertex.getEdgeAmount();
-            for(int i = 0; i < count; i++){
-                Edge edge = vertex.getEdge(i);
-                Vertex n_vertex = getVertex(edge.getFinish()).get();
-                if(!n_vertex.isLinked(vertex)){
-                    n_vertex.addEdge(vertex.getLabel(), edge.getWeight());
-                    edge_count -= 1;
-                }
-                if(edge_count == 0){
-                    return;
+        if(edge_count > 0) {
+            for (Vertex vertex : vertex_list) {
+                int count = vertex.getEdgeAmount();
+                for (int i = 0; i < count; i++) {
+                    Edge edge = vertex.getEdge(i);
+                    Vertex n_vertex = getVertex(edge.getFinish()).get();
+                    if (!n_vertex.isLinked(vertex)) {
+                        n_vertex.addEdge(vertex.getLabel(), edge.getWeight());
+                        edge_count -= 1;
+                    }
+                    if (edge_count == 0) {
+                        return;
+                    }
                 }
             }
         }

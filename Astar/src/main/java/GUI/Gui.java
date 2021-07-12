@@ -58,10 +58,8 @@ public class Gui {
         return graph;
     }
 
-    public Gui(MyGraph gr, String start, String finish){
+    public Gui(MyGraph gr){
         this.graph = gr;
-        this.start =start;
-        this.finish = finish;
         window = new JFrame("Practise project");
         window.setSize(1200, 680);
         window.setLayout(null);
