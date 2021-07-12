@@ -8,11 +8,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MyCanvas extends JComponent implements MouseListener{
+public class MyCanvas extends JComponent implements MouseListener {
     private MyGraph graph;
 
     private static Logger logger = LogManager.getLogger(GUI.MyCanvas.class);
@@ -23,6 +24,8 @@ public class MyCanvas extends JComponent implements MouseListener{
     private int step = 60;
     private int shift = step/8;
     private int cshift = step/2 - 1;
+    private int delete_x = 0;
+    private int delete_y = 0;
     private int mouse_x = -1;
     private int mouse_y = -1;
     private int start_x = 0;
@@ -70,8 +73,8 @@ public class MyCanvas extends JComponent implements MouseListener{
 
         if(mouseEvent.getButton() == 2) {
             if(delete_click == 0) {
-                start_x = mouseEvent.getX() / step;
-                start_y = mouseEvent.getY() / step;
+                delete_x = mouseEvent.getX() / step;
+                delete_y = mouseEvent.getY() / step;
                 message.setText("Start of edge for deleting added!");
             }
             delete_click += 1;
@@ -83,6 +86,9 @@ public class MyCanvas extends JComponent implements MouseListener{
     }
 
     private void addingVertex(MouseEvent mouseEvent) throws IndexOutOfBoundsException{
+        graph.resetGraph();
+        graph.resetStartFinish();
+
         int x = mouseEvent.getX() / step;
         int y = mouseEvent.getY() / step;
         if (graph.getVertex(x, y).isEmpty()) {
@@ -109,6 +115,9 @@ public class MyCanvas extends JComponent implements MouseListener{
     }
 
     private void addingEdge(MouseEvent mouseEvent) throws IndexOutOfBoundsException{
+        graph.resetGraph();
+        graph.resetStartFinish();
+
         append_click = 0;
         finish_x = mouseEvent.getX()/step;
         finish_y = mouseEvent.getY()/step;
@@ -134,12 +143,15 @@ public class MyCanvas extends JComponent implements MouseListener{
     }
 
     private void deletingEdge(MouseEvent mouseEvent) throws IndexOutOfBoundsException{
+        graph.resetGraph();
+        graph.resetStartFinish();
+
         delete_click = 0;
         finish_x = mouseEvent.getX()/step;
         finish_y = mouseEvent.getY()/step;
         Vertex start, finish;
-        if(graph.getVertex(start_x, start_y).isPresent() & graph.getVertex(finish_x, finish_y).isPresent() && (start_x != finish_x || start_y != finish_y)) {
-            start = graph.getVertex(start_x, start_y).get();
+        if(graph.getVertex(delete_x, delete_y).isPresent() & graph.getVertex(finish_x, finish_y).isPresent() && (delete_x != finish_x || delete_y != finish_y)) {
+            start = graph.getVertex(delete_x, delete_y).get();
             finish = graph.getVertex(finish_x, finish_y).get();
             try{
                 graph.deleteEdge(start.getLabel(), finish.getLabel());
@@ -156,6 +168,9 @@ public class MyCanvas extends JComponent implements MouseListener{
     }
 
     private void deletingVertex(MouseEvent mouseEvent) throws IndexOutOfBoundsException{
+        graph.resetGraph();
+        graph.resetStartFinish();
+
         int x = mouseEvent.getX() / step;
         int y = mouseEvent.getY() / step;
         if (graph.getVertex(x, y).isPresent()) {
@@ -168,14 +183,13 @@ public class MyCanvas extends JComponent implements MouseListener{
 
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
-        mouse_x = -1;
-
         mes_window = new JFrame("Message for user");
         mes_window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        mes_window.setSize(320, 200);
+        //mes_window.setSize(320, 200);
         mes_window.setLayout(null);
         mes_window.setVisible(true);
         mes_window.add(message);
+        mes_window.setBounds((int)this.getAlignmentX() + 810, 0, 320, 200);
 
         message.setBounds(10,10,300, 120);
 
@@ -194,12 +208,17 @@ public class MyCanvas extends JComponent implements MouseListener{
                 if (button_time > 2000) {
                     int x = mouseEvent.getX() / step;
                     int y = mouseEvent.getY() / step;
-                    if (graph.getStart().isEmpty()) {
-                        graph.setStart(graph.getVertex(x, y).get().getLabel());
-                        message.setText("Start added!");
-                    } else {
-                        graph.setFinish(graph.getVertex(x, y).get().getLabel());
-                        message.setText("Finish added!");
+                    if(graph.getVertex(x, y).isPresent()) {
+                        if (graph.getStart().isEmpty()) {
+                            graph.setStart(graph.getVertex(x, y).get().getLabel());
+                            message.setText("Start added!");
+                        } else {
+                            graph.setFinish(graph.getVertex(x, y).get().getLabel());
+                            message.setText("Finish added!");
+                        }
+                    }
+                    else{
+                        message.setText("<html>Fail to append start or finish!<br>Causes:<br>-There is no vertex here</html>");
                     }
                 }
                 else {
@@ -245,7 +264,11 @@ public class MyCanvas extends JComponent implements MouseListener{
 
     @Override
     public void mouseExited(MouseEvent mouseEvent) {
-
+        if(mes_window != null) {
+            mes_window.dispose();
+        }
+        mouse_x = -1;
+        repaint();
     }
 
     @Override

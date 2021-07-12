@@ -68,7 +68,7 @@ public class MyGraph {
     }
 
     public MyGraph(int vertex_count, int edge_count, int min_weight, int max_weight) throws IndexOutOfBoundsException{
-        if(!checkParamForRandomGer(vertex_count, edge_count, max_weight) || min_weight <= 0){
+        if(!checkParamForRandomGer(vertex_count, edge_count, max_weight) || min_weight <= 0 || max_weight <= 1 || min_weight > max_weight){
             throw new IndexOutOfBoundsException("Invalid input data!");
         }
         vertex_list = new ArrayList<>();

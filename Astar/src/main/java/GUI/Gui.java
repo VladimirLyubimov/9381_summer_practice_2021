@@ -1,6 +1,7 @@
 package GUI;
 
 import Algo.AWithStar;
+import GUI.Actions.HelpAction;
 import GUI.AlgoVisual.AlgoVisualization;
 import Graph.MyGraph;
 import Graph.Vertex;
@@ -11,6 +12,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ public class Gui {
     private JFrame window;
     private MyCanvas graph_drawer;
 
+    private JButton help;
     private JButton random_grah;
     private JButton unar_grah;
     private JButton from_file;
@@ -89,6 +93,14 @@ public class Gui {
         status_text.setBorder(BorderFactory.createEtchedBorder());
         window.add(status_text);
 
+        help = new JButton(new HelpAction());
+        help.setBounds(860, 30, 200, 30);
+        help.setFont(font);
+        help.setMargin(inset);
+        help.setText("Help");
+        window.add(help);
+
+
         int[] graph_param = new int[4];
         random_grah = new JButton(new AbstractAction() {
             @Override
@@ -113,7 +125,7 @@ public class Gui {
                 }
                 catch (IOException err){
                     logger.error(err.getMessage(), err);
-                    status_text.setText("<html>Messages for user:<br>- Wrong input data for random generation!<br>- Remember:<br>all numbers must be non-negative;<br>max amount of vertexes is " + (int)(Math.ceil((double)10/(double)graph_param[3])*Math.ceil((double)9/(double)graph_param[3])) + " and you have " + graph_param[0] + ";<br>max amount of edges is "+ (2*graph_param[0]-2) + " and you have " + graph_param[1] + ";<br>maximal edge weight must be less than 10 and you have " + graph_param[3] + ";<br>for make graph with only unary edge use another button</html>");
+                    status_text.setText("<html>Messages for user:<br>- Wrong input data for random generation!<br>- Remember:<br>all numbers must be non-negative;<br>max amount of vertexes is " + (int)(Math.ceil((double)10/(double)graph_param[3])*Math.ceil((double)9/(double)graph_param[3])) + " and you have " + graph_param[0] + ";<br>max amount of edges is "+ (2*graph_param[0]-2) + " and you have " + graph_param[1] + ";<br>maximal edge weight must be less than 9, more than 1 and not less than minimal weight, which is " + graph_param[2] + ", and you have max weight " + graph_param[3] + ";<br>for make graph with only unary edges use another button 'Create unary graph'</html>");
                 }
             }
         });
@@ -157,7 +169,7 @@ public class Gui {
         from_file = new JButton("Load graph from file");
         from_file.setFont(font);
         from_file.setMargin(inset);
-        from_file.setBounds(860, 90, 200, 30);
+        from_file.setBounds(860, 140, 200, 30);
         window.add(from_file);
 
         step_forward = new JButton(new AbstractAction() {
@@ -283,7 +295,7 @@ public class Gui {
 
         filename = new JTextField();
         filename.setToolTipText("Input filename");
-        filename.setBounds(860, 50, 200, 30);
+        filename.setBounds(860, 100, 200, 30);
         window.add(filename);
 
         vertex_amount = new JTextField();
@@ -307,7 +319,7 @@ public class Gui {
         window.add(max_weight);
 
         filename_text = new JLabel("Input filename:");
-        filename_text.setBounds(860, 30, 200, 20);
+        filename_text.setBounds(860, 80, 200, 20);
         window.add(filename_text);
 
         vertex_amount_text = new JLabel("Input vertex amount:");
