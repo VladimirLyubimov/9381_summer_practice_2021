@@ -25,8 +25,11 @@ public class HelpAction extends AbstractAction {
     public void actionPerformed(ActionEvent actionEvent){
         frame.setVisible(true);
         text.setText("<html>1) Modifying graph<br>" +
-                "-To load graph fro file input filename in corresponding text field" +
+                "-To load graph from file input filename in corresponding text field" +
                 " and press button 'Load graph from file'<br>" +
+                "Graph in file is Json object with two fields 'vertexes' and 'edges', which are string<br>" +
+                "Vertex's string contains vertexes, which are represented as &lt;label&gt;&lt;space&gt;&lt;x coord&gt;&lt;space&gt;&lt;y coord&gt;&lt;comma&gt;<br>" +
+                "Edge's string contains edges, which are represented as &lt;start vertex label&gt;&lt;space&gt;&lt;finish vertex label&gt;&lt;space&gt;&lt;weight&gt;&lt;comma&gt;<br>" +
                 "-To create random graph input vertex amount, edge amount, minimal and maximal edge weights as " +
                 "integer decimal numbers in corresponding fields and press button 'Create random graph'.<br>" +
                 "Remember that maximal amount of vertexes is ceil(10/max_weight)*ceil(9/max_weight);" +

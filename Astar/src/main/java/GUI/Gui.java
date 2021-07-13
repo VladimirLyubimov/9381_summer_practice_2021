@@ -1,22 +1,25 @@
 package GUI;
 
 import Algo.AWithStar;
+import FileIO.FromFile;
+import FileIO.ToFile;
 import GUI.Actions.HelpAction;
 import GUI.AlgoVisual.AlgoVisualization;
+import Graph.GraphSerializer;
 import Graph.MyGraph;
 import Graph.Vertex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.google.gson.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Optional;
 import javax.swing.Timer;
 
 public class Gui {
@@ -27,6 +30,7 @@ public class Gui {
     private JButton random_grah;
     private JButton unar_grah;
     private JButton from_file;
+    private JButton to_file;
     private JButton step_forward;
     private JButton step_back;
     private JButton go_end;
@@ -117,7 +121,6 @@ public class Gui {
                 try {
                     makeRandomGraph(graph_param);
                     graph_drawer.updateGraph(graph);
-                    System.out.println(graph);
                     graph_drawer.repaint();
                     status_text.setText("<html>Messages for user:<br>- You successfully build new random graph</html>");
                 }
@@ -152,7 +155,6 @@ public class Gui {
                 try {
                     makeUnarGraph(vertex_count);
                     graph_drawer.updateGraph(graph);
-                    System.out.println(graph);
                     graph_drawer.repaint();
                     status_text.setText("<html>Messages for user:<br>- You successfully build new unary graph</html>");
                 }
@@ -168,10 +170,43 @@ public class Gui {
         random_grah.setBounds(860, 300, 200, 30);
         window.add(random_grah);
 
-        from_file = new JButton("Load graph from file");
+        to_file = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                boolean success = ToFile.write(graph, filename.getText());
+                if(success){
+                    status_text.setText("<html>Messages for user:<br>- Graph saved into file with name "+ filename.getText() +"</html>");
+                }
+                else{
+                    status_text.setText("<html>Messages for user:<br>- Fail to save into file with name "+ filename.getText() +"<br>Check that:<br>filename is correct</html>");
+                }
+            }
+        });
+        to_file.setText("Save graph into file");
+        to_file.setFont(font);
+        to_file.setMargin(inset);
+        to_file.setBounds(860, 140, 200, 30);
+        window.add(to_file);
+
+        from_file = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try{
+                    makeGraph(filename.getText());
+                    graph_drawer.updateGraph(graph);
+                    graph_drawer.repaint();
+                    status_text.setText("<html>Messages for user:<br>- Graph loaded from file with name "+ filename.getText() +"<br>- If file data was corrupted empty graph created<br>- Corrupted data means:<br>Invalid Json object<br>Invalid data in vertex or edge lists</html>");
+                }
+                catch (IOException err){
+                    status_text.setText("<html>Messages for user:<br>- Fail to load from file with name "+ filename.getText() +"<br>Check that:<br>filename is correct</html>");
+                    logger.error(err.getMessage(), err);
+                }
+            }
+        });
+        from_file.setText("Load graph from file");
         from_file.setFont(font);
         from_file.setMargin(inset);
-        from_file.setBounds(860, 140, 200, 30);
+        from_file.setBounds(860, 190, 200, 30);
         window.add(from_file);
 
         step_forward = new JButton(new AbstractAction() {
@@ -190,11 +225,6 @@ public class Gui {
                 }
                 if(!states[1]) {
                     states[1] = AVisual.makeStep(graph);
-                    /*StringBuilder st = new StringBuilder("Open set in order of adding is:\n");
-                    for(Vertex vertex : graph.getOpen_set()){
-                        st.append("Vertex name : ").append(vertex.getLabel()).append("; Path value : ").append(vertex.getPathVal()).append("; Total value : ").append(vertex.getTotalVal()).append("; Came from : ").append(vertex.getCameFrom()).append("\n");
-                    }
-                    open_set_text.setText(new String(st));*/
                     graph_drawer.repaint();
                     status_text.setText("<html>Messages for user:<br>- You make an algorithm step</html>");
                 }
@@ -362,5 +392,16 @@ public class Gui {
             logger.error(err.getMessage(), err);
             throw new IOException("Problem with random graph generation");
         }
+    }
+
+    public void makeGraph(String filename) throws IOException{
+        Optional<MyGraph> optional = FromFile.read(filename);
+        if(optional.isPresent()){
+            graph = optional.get();
+        }
+        else{
+            throw new IOException("Problem with read graph from file");
+        }
+
     }
 }

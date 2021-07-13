@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class GraphSerializer implements JsonSerializer<MyGraph>{
+    @Override
     public JsonElement serialize(MyGraph src, Type typeOfSrc, JsonSerializationContext context){
         JsonObject result = new JsonObject();
 
@@ -22,12 +23,12 @@ public class GraphSerializer implements JsonSerializer<MyGraph>{
         }
         StringBuilder ver_st  = new StringBuilder("");
         for(String st : vertex_list){
-            ver_st.append(st).append('_');
+            ver_st.append(st).append(',');
         }
 
         StringBuilder edge_st  = new StringBuilder("");
         for(String st : edge_list){
-            edge_st.append(st).append('_');
+            edge_st.append(st).append(',');
         }
 
         result.addProperty("vertexes", new String(ver_st));

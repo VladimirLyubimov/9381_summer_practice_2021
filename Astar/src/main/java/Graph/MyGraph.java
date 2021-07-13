@@ -1,7 +1,5 @@
 package Graph;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,8 +9,8 @@ import java.util.Optional;
 
 public class MyGraph {
     private ArrayList<Vertex> vertex_list;
-    private ArrayList<Vertex> open_set = new ArrayList<>();;
-    private ArrayList<Vertex> close_set = new ArrayList<>();;
+    private ArrayList<Vertex> open_set = new ArrayList<>();
+    private ArrayList<Vertex> close_set = new ArrayList<>();
 
     private ArrayList<String> path = new ArrayList<>();
 
@@ -33,6 +31,9 @@ public class MyGraph {
         vertex_list = new ArrayList<>();
         graph_on_plot = new ArrayList<>();
         size = 0;
+        resetGraph();
+        resetStartFinish();
+        cur_vertex = null;
     }
 
     public MyGraph(int vertex_count) throws  IndexOutOfBoundsException{//build graph where all edge weights are 1 and all vertexes linked
@@ -67,6 +68,10 @@ public class MyGraph {
                 vertex.addEdge(getVertex(x,y-1).get().getLabel(), 1);
             }
         }
+
+        resetGraph();
+        resetStartFinish();
+        cur_vertex = null;
     }
 
     public MyGraph(int vertex_count, int edge_count, int min_weight, int max_weight) throws IndexOutOfBoundsException{
@@ -147,11 +152,18 @@ public class MyGraph {
                         edge_count -= 1;
                     }
                     if (edge_count == 0) {
+                        resetGraph();
+                        resetStartFinish();
+                        cur_vertex = null;
                         return;
                     }
                 }
             }
         }
+
+        resetGraph();
+        resetStartFinish();
+        cur_vertex = null;
     }
 
     public MyGraph(String[] edge_list, String[] vertex_list) throws IndexOutOfBoundsException{
@@ -180,6 +192,10 @@ public class MyGraph {
                 throw new IndexOutOfBoundsException("Unable to create edge from " + data[0] + " to " + data[1]);
             }
         }
+
+        resetGraph();
+        resetStartFinish();
+        cur_vertex = null;
     }
 
     public Optional<Vertex> getVertex(int x, int y){
