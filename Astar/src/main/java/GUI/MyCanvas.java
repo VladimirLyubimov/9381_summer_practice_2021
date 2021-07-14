@@ -45,6 +45,8 @@ public class MyCanvas extends JComponent implements MouseListener {
 
     public void updateGraph(MyGraph graph){
         this.graph = graph;
+        append_click = 0;
+        delete_click = 0;
     }
 
     @Override
